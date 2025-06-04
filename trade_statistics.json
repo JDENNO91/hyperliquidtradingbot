@@ -1,21 +1,21 @@
 {
-  "totalTrades": 25,
-  "profitableTrades": 19,
+  "totalTrades": 27,
+  "profitableTrades": 21,
   "losingTrades": 6,
-  "winRate": 0.76,
-  "averageProfitPerTrade": 14.926770562357337,
-  "averageWin": 53.85953096439114,
-  "averageLoss": -108.36030404408302,
-  "largestWin": 76.01210375105752,
-  "largestLoss": -215.1913793023473,
+  "winRate": 0.7777777777777778,
+  "averageProfitPerTrade": 0.13368577595125214,
+  "averageWin": 0.2258355786983166,
+  "averageLoss": -0.1888385336634734,
+  "largestWin": 0.2989392241004934,
+  "largestLoss": -0.40460149763362896,
   "profitByExitReason": {
-    "SIGNAL": -291.30570364121917,
-    "TAKE_PROFIT": 664.4749677001527,
-    "LIQUIDATION": 0
+    "SIGNAL": 0.4269657759502759,
+    "TAKE_PROFIT": 3.282710270674653,
+    "LIQUIDATION": -0.1001600959411216
   },
   "tradesByExitReason": {
-    "SIGNAL": 16,
-    "TAKE_PROFIT": 9,
-    "LIQUIDATION": 0
+    "SIGNAL": 14,
+    "TAKE_PROFIT": 11,
+    "LIQUIDATION": 2
   }
 }

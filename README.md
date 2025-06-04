@@ -1,4 +1,4 @@
-# Hyperliquid Algo Trading Bot
+# Hyperliquid Algo Trading Bot by Joseph Dennis
 
 An advanced algorithmic trading bot for the Hyperliquid DEX, featuring a Bollinger Bands + RSI + ADX strategy, comprehensive backtesting framework, and machine learning optimization capabilities. This bot is designed for algorithmic trading on perpetual futures contracts, with a focus on automated strategy execution and optimization.
 
