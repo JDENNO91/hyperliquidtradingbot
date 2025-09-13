@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  trading-bot:
+    build: .
+    container_name: hyperliquid-trading-bot
+    restart: unless-stopped
+    
+    # Environment variables
+    environment:
+      - PYTHONPATH=/app/src
+      - LOG_LEVEL=INFO
+      - CONFIG_DIR=/app/src/config
+      - LOG_DIR=/app/logs
+    
+    # Volume mounts
+    volumes:
+      - ./src/config:/app/src/config:ro
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - ./backups:/app/backups
+    
+    # Ports (if needed for dashboard)
+    ports:
+      - "8501:8501"  # Streamlit dashboard
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "python", "src/utils/performance_monitor.py", "--status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Command override (uncomment and modify as needed)
+    # command: ["python", "src/main.py", "backtest", "--config", "backtest_eth"]
+    # command: ["python", "src/main.py", "simulate", "--config", "live_eth"]
+    # command: ["python", "src/main.py", "trade", "--config", "live_eth", "--dry-run"]
+
+  # Optional: Dashboard service
+  dashboard:
+    build: .
+    container_name: hyperliquid-dashboard
+    restart: unless-stopped
+    
+    environment:
+      - PYTHONPATH=/app/src
+    
+    volumes:
+      - ./src/config:/app/src/config:ro
+      - ./logs:/app/logs
+      - ./data:/app/data
+    
+    ports:
+      - "8502:8501"  # Dashboard on different port
+    
+    command: ["streamlit", "run", "src/application/dashboard.py", "--server.port=8501", "--server.address=0.0.0.0"]
+    
+    depends_on:
+      - trading-bot
+    
+    profiles:
+      - dashboard  # Only start with --profile dashboard
+
+  # Optional: Monitoring service
+  monitoring:
+    build: .
+    container_name: hyperliquid-monitoring
+    restart: unless-stopped
+    
+    environment:
+      - PYTHONPATH=/app/src
+    
+    volumes:
+      - ./logs:/app/logs
+    
+    command: ["python", "src/utils/performance_monitor.py", "--start", "--interval", "10"]
+    
+    depends_on:
+      - trading-bot
+    
+    profiles:
+      - monitoring  # Only start with --profile monitoring
+
+networks:
+  default:
+    name: hyperliquid-network

@@ -1,0 +1,65 @@
+{
+  "strategy": "scalping",
+  "data_file": "src/backtesting/data/ETH-PERP/ETH-PERP-1m.json",
+  "trading": {
+    "market": "ETH-PERP",
+    "positionSize": 0.05,
+    "leverage": 5,
+    "leverageMode": "isolated",
+    "maxPositions": 5,
+    "timeframe": "1m",
+    "profitTarget": 0.005,
+    "testMode": true,
+    "stop_loss_pct": 0.003,
+    "take_profit_pct": 0.005,
+    "max_consecutive_losses": 10,
+    "use_volatility_sizing": true,
+    "entry_threshold": 0.002,
+    "exit_threshold": 0.005,
+    "max_hold_time": 300,
+    "volume_multiplier": 1.5,
+    "max_position_size": 0.05
+  },
+  "position_management": {
+    "max_concurrent_positions": 3,
+    "allow_multiple_symbols": false,
+    "allow_hedging": false,
+    "max_drawdown_per_position": 0.03,
+    "auto_close_on_max_loss": true
+  },
+  "indicators": {
+    "rsi": {
+      "period": 14,
+      "overbought": 70,
+      "oversold": 30
+    },
+    "bollinger": {
+      "period": 20,
+      "stdDev": 2
+    },
+    "adx": {
+      "period": 14,
+      "threshold": 25
+    }
+  },
+  "database": {
+    "path": "./db/scalping_backtest.db"
+  },
+  "logging": {
+    "console": {
+      "level": "info"
+    },
+    "file": {
+      "level": "debug",
+      "path": "./logs/scalping_backtest_debug.log"
+    }
+  },
+  "backtest": {
+    "initialCapital": 10000,
+    "tradingFee": 0.001,
+    "slippage": 0.0005,
+    "startDate": "2024-01-01",
+    "endDate": "2023-12-31",
+    "maxDrawdown": 0.5
+  }
+}

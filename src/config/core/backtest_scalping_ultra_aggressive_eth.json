@@ -1,0 +1,64 @@
+{
+  "strategy": "scalping",
+  "data_file": "src/backtesting/data/ETH-PERP/ETH-PERP-1m.json",
+  "trading": {
+      "market": "ETH-PERP",
+      "positionSize": 0.8,
+      "leverage": 15,
+      "leverageMode": "isolated",
+      "maxPositions": 3,               
+      "timeframe": "1m",
+      "profitTarget": 2.5,
+      "testMode": true,
+      "stop_loss_pct": 0.0005,
+      "take_profit_pct": 0.025,
+      "max_consecutive_losses": 5,
+      "use_volatility_sizing": true
+  },
+  "position_management": {
+      "max_positions": 3,
+      "allow_multiple": true,
+      "auto_close_on_loss": false,
+      "max_loss_percentage": 0.15
+  },
+  "indicators": {
+      "rsi": {
+          "period": 14,
+          "overbought": 50,
+          "oversold": 50,
+          "extreme_overbought": 45,
+          "extreme_oversold": 55
+      },
+      "bollinger": {
+          "period": 20,
+          "stdDev": 1.2
+      },
+      "adx": {
+          "period": 14,
+          "threshold": 1.5
+      },
+      "min_adx_trend": 0.8,
+      "bb_squeeze_threshold": 0.0002,
+      "volatility_lookback": 8
+  },
+  "database": {
+      "path": "./db/backtest.db"
+  },
+  "logging": {
+      "console": {
+          "level": "info"
+      },
+      "file": {
+          "level": "debug",
+          "path": "./logs/backtest_debug.log"
+      }
+  },
+  "backtest": {
+      "initialCapital": 10000,
+      "tradingFee": 0.001,
+      "slippage": 0.0005,
+      "startDate": "2024-01-01",
+      "endDate": "2023-12-31",
+      "maxDrawdown": 1.0
+  }
+}

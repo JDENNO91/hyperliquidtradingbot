@@ -1,0 +1,61 @@
+{
+  "trading": {
+    "market": "ETH-PERP",
+    "positionSize": 0.1,
+    "leverage": 5,
+    "leverageMode": "isolated",
+    "maxPositions": 20,
+    "timeframe": "1m",
+    "profitTarget": 1.5,
+    "testMode": true,
+    "stop_loss_pct": 0.015,
+    "take_profit_pct": 0.03,
+    "max_consecutive_losses": 3,
+    "use_volatility_sizing": true
+  },
+  "position_management": {
+    "max_positions": 20,
+    "allow_multiple": true,
+    "auto_close_on_loss": false,
+    "max_loss_percentage": 0.05
+  },
+  "indicators": {
+    "rsi": {
+      "period": 14,
+      "overbought": 70,
+      "oversold": 30,
+      "extreme_overbought": 75,
+      "extreme_oversold": 25
+    },
+    "bollinger": {
+      "period": 20,
+      "stdDev": 2
+    },
+    "adx": {
+      "period": 14,
+      "threshold": 20
+    },
+    "min_adx_trend": 18,
+    "bb_squeeze_threshold": 0.01,
+    "volatility_lookback": 20
+  },
+  "risk": {
+    "max_risk_per_trade": 0.02,
+    "max_position_size": 0.5,
+    "max_open_positions": 20,
+    "max_drawdown": 0.25,
+    "max_consecutive_losses": 5,
+    "volatility_window": 20
+  },
+  "backtest": {
+    "initial_capital": 10000,
+    "trading_fee": 0.001,
+    "slippage": 0.0005,
+    "max_drawdown": 0.25
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "file": "trading.log"
+  }
+}

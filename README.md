@@ -1,266 +1,229 @@
-# Hyperliquid Algo Trading Bot
+# Hyperliquid Python Trading Bot
 
-An advanced algorithmic trading bot for the Hyperliquid DEX, featuring a Bollinger Bands + RSI + ADX strategy, comprehensive backtesting framework, and machine learning optimization capabilities. This bot is designed for algorithmic trading on perpetual futures contracts, with a focus on automated strategy execution and optimization.
+A comprehensive algorithmic trading system for the Hyperliquid DEX, featuring backtesting, live trading, and strategy development capabilities.
 
 ## Features
 
-- **Multiple Trading Strategies**:
-
-    - Bollinger Bands + RSI + ADX strategy (BBRSI)
-    - ML-enhanced strategies with optimized parameters
-    - Customizable entry/exit conditions
-
-- **Advanced Backtesting System**:
-
-    - Historical data analysis with realistic trade simulation
-    - Performance metrics and statistics
-    - Visualization of equity curves and trade performance
-    - Multi-symbol testing capabilities
-    - Risk management analysis
-
-- **Machine Learning Optimization**:
-
-    - Automated parameter optimization using ML models
-    - Feature importance analysis
-    - Support for different ML models (Random Forest, XGBoost, Neural Networks)
-    - Optimized strategy parameter generation
-
-- **Risk Management**:
-
-    - Configurable position sizing
-    - Take profit mechanisms
-    - Liquidation prevention
-    - Performance analysis
-
-- **Visualization Tools**:
-    - Equity curve visualization
-    - Trade performance charts
-    - Drawdown analysis
-    - Interactive HTML reports
-
-## Prerequisites
-
-- Node.js (v14 or higher)
-- npm (Node Package Manager)
-- Python 3.x (for ML optimization features)
-- Python packages: numpy, pandas, scikit-learn, xgboost, shap, matplotlib
-
-## Installation
-
-1. Clone the repository:
-
-    ```bash
-    git clone <repository-url>
-    cd hyperliquidalgobot
-    ```
-
-2. Install Node.js dependencies:
-
-    ```bash
-    npm install
-    ```
-
-3. Install Python dependencies (for ML features):
-
-    ```bash
-    pip install numpy pandas scikit-learn xgboost shap matplotlib
-    ```
-
-4. Create a `.env` file in the root directory:
-    ```env
-    PRIVATE_KEY=your_private_key_here
-    ```
-
-## Configuration
-
-The bot's behavior can be customized through the configuration files in the `config/` directory:
-
-- `default.json`: Default trading settings
-- `backtest.json`: Specific settings for backtesting
-
-### Key Configuration Parameters
-
-**Trading Parameters:**
-
-- `market`: Trading pair (default: BTC-PERP)
-- `positionSize`: Position size as a decimal (e.g., 0.1 for 10%)
-- `leverage`: Trading leverage
-- `timeframe`: Candlestick interval
-- `profitTarget`: Take profit percentage
-
-**Indicator Parameters:**
-
-- RSI settings: period, overbought, oversold levels
-- Bollinger Bands settings: period, standard deviation
-- ADX settings: period, threshold
-
-## Usage
-
-### Live Trading
-
-Start the trading bot (not fully implemented yet):
-
-```bash
-npm start
-```
-
-### Backtesting
-
-Run a backtest with default settings:
-
-```bash
-npm run backtest
-```
-
-Run a backtest with specific configuration:
-
-```bash
-node src/backtesting/run.js --config backtest
-```
-
-### ML-Enhanced Backtesting
-
-Run a backtest with ML-optimized parameters:
-
-```bash
-node src/backtesting/run.js --config backtest --use-ml
-```
-
-Specify a particular ML model:
-
-```bash
-node src/backtesting/run.js --config backtest --use-ml --ml-model BTC-PERP_15m_randomforest
-```
-
-### Visualization
-
-Visualize backtest results:
-
-```bash
-node src/backtesting/visualize.js
-```
-
-### ML Optimization
-
-Generate ML-optimized parameters:
-
-```bash
-node src/backtesting/ml_optimize.js --market BTC-PERP --timeframe 15m
-```
-
-## Trading Strategies
-
-### BBRSI Strategy
-
-A strategy that combines Bollinger Bands, RSI, and ADX indicators:
-
-- **Long Entry Conditions**:
-
-    - Price crosses below the lower Bollinger Band
-    - RSI is below the oversold level
-    - ADX is above the threshold
-
-- **Short Entry Conditions**:
-
-    - Price crosses above the upper Bollinger Band
-    - RSI is above the overbought level
-    - ADX is above the threshold
-
-- **Exit Conditions**:
-    - Take profit at the configured target
-    - Cross of price under/over middle Bollinger Band
-    - RSI extreme levels (>80 for longs, <20 for shorts)
-
-### ML-Enhanced Strategy
-
-Extends the base strategies by applying machine learning optimized parameters:
-
-- Uses the same signal generation logic as the base strategy
-- Parameters are optimized using machine learning models
-- Models analyze historical performance to find optimal settings
-- Feature importance analysis identifies key indicators
+- **Backtesting Engine**: Test strategies against historical data with detailed performance metrics
+- **Live Trading**: Execute trades on Hyperliquid DEX with real-time market data
+- **Strategy Framework**: Modular strategy system with built-in indicators
+- **Risk Management**: Position sizing, drawdown protection, and risk controls
+- **Multiple Timeframes**: Support for 1m, 5m, 15m, 1h, 4h, 1d timeframes
+- **Performance Analytics**: Comprehensive trade statistics and performance metrics
 
 ## Project Structure
 
 ```
-├── config/                      # Configuration files
-│   ├── default.json             # Default trading settings
-│   └── backtest.json            # Backtesting settings
-├── src/
-│   ├── application/             # Main application code
-│   │   └── controller.js        # Application controller
-│   ├── backtesting/             # Backtesting framework
-│   │   ├── Backtester.js        # Core backtesting engine
-│   │   ├── RiskManager.js       # Risk management module
-│   │   ├── ml_optimizer.js      # ML optimization implementation
-│   │   ├── ml_optimize.js       # ML optimization CLI
-│   │   ├── visualization.js     # Visualization library
-│   │   ├── visualize.js         # Visualization CLI
-│   │   ├── run.js               # Backtesting runner
-│   │   ├── strategies/          # Strategy implementations for backtesting
-│   │   │   └── MLEnhancedStrategy.js  # ML-enhanced strategy
-│   │   └── data/                # Historical data for backtesting
-│   ├── hyperliquid/             # Hyperliquid integration
-│   │   ├── marketInfo.js        # Market information fetching
-│   │   ├── trade.js             # Trading functions
-│   │   └── websocket.js         # WebSocket connection
-│   └── strategy/                # Trading strategies
-│       ├── BBRSIStrategy.js     # Bollinger Bands + RSI + ADX strategy
-│       ├── ScalpingStrategy.js  # Scalping strategy
-│       └── indicators/          # Technical indicators
-│           ├── ema.js           # EMA calculation
-│           └── index.js         # Indicator utilities
-├── .env                         # Environment variables (not in repo)
-└── package.json                 # Project dependencies
+hyperliquidpython/
+├── src/                 # Source code
+│   ├── application/     # Hyperliquid SDK integration
+│   ├── backtesting/     # Backtesting engine and data
+│   ├── cli/             # Command-line interfaces
+│   ├── config/          # Configuration files
+│   ├── core/            # Core trading components
+│   ├── live/            # Live trading modules
+│   ├── live_simulation/ # Paper trading simulation
+│   ├── strategies/      # Trading strategies
+│   └── utils/           # Utility functions
+├── docs/                # Documentation
+│   ├── guides/          # User guides and commands
+│   ├── results/         # Performance results
+│   └── deployment/      # Deployment guides
+├── docker/              # Docker configuration
+├── README.md            # This file
+├── requirements.txt     # Python dependencies
+└── setup.py            # Package setup
 ```
 
-## Backtesting Results
+## Quick Start
 
-The backtesting system generates several output files:
+### Installation
 
-- `equity_curve.json`: Equity curve data
-- `backtest_trades.json`: Detailed trade information
-- `trade_statistics.json`: Performance statistics
-- `equity_curve_chart.html`: Visual equity curve chart
-- `trade_performance_chart.html`: Trade performance visualization
-- `drawdown_chart.html`: Drawdown analysis
-- `backtest_summary.html`: Complete backtest summary
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd hyperliquidpython
+```
 
-## ML Optimization Results
+2. Install dependencies:
+```bash
+# Option A: Automated setup (recommended)
+./setup.sh
 
-The ML optimization process generates:
+# Option B: Manual setup
+pip install -r requirements.txt
+cd src/application/hyperliquid_sdk
+pip install -e .
+cd ../../..
+```
 
-- Optimized parameter files in `src/backtesting/ml_models/`
-- Feature importance analysis
-- Performance metrics
-- HTML reports
+3. Set up configuration:
+```bash
+cp src/config/defaults.json src/config/your_config.json
+# Edit your_config.json with your settings
+```
 
-## Safety Features
+### Running Backtests
 
-- Configurable position sizing
-- Take-profit mechanisms
-- Risk management controls
-- Comprehensive error handling
+Test a strategy against historical data:
+
+```bash
+cd src
+source ../.venv/bin/activate
+python -m cli.backtest --config config/core/backtest_eth.json
+```
+
+**📚 For complete command reference, see [STRATEGY_COMMANDS.md](STRATEGY_COMMANDS.md)**
+
+### Live Trading
+
+Start live trading (requires Hyperliquid API credentials):
+
+```bash
+python -m cli.trade --config config/live_eth.json
+```
+
+### Documentation
+
+All documentation is organized in the `docs/` folder:
+
+- **Guides** (`docs/guides/`) - User guides and command references
+- **Results** (`docs/results/`) - Performance results and analysis  
+- **Deployment** (`docs/deployment/`) - Setup and deployment guides
+
+See `docs/README.md` for a complete overview.
+
+### Strategy Development
+
+Create custom strategies by extending the `BaseStrategy` class:
+
+```python
+from strategies.base_strategy import BaseStrategy
+
+class MyStrategy(BaseStrategy):
+    def should_open_position(self, data):
+        # Your entry logic here
+        return True
+    
+    def should_close_position(self, data, position):
+        # Your exit logic here
+        return True
+```
+
+## Available Strategies
+
+- **BBRSI Strategy**: Bollinger Bands + RSI combination strategy
+- **Scalping Strategy**: High-frequency scalping with tight stops
+- **Debug Strategy**: Simple strategy for testing and debugging
+
+## Configuration
+
+Configuration files are located in `src/config/`:
+
+- `defaults.json`: Default configuration values
+- `backtest_*.json`: Backtesting configurations
+- `live_*.json`: Live trading configurations
+
+Key configuration options:
+- `initial_capital`: Starting capital amount
+- `max_position_size`: Maximum position size as fraction of capital
+- `risk_per_trade`: Risk per trade as fraction of capital
+- `commission`: Trading commission rate
+- `slippage`: Expected slippage rate
+
+## Performance Metrics
+
+The system tracks comprehensive performance metrics:
+
+- **Returns**: Total return, annualized return
+- **Risk Metrics**: Sharpe ratio, maximum drawdown, volatility
+- **Trade Statistics**: Win rate, profit factor, average trade duration
+- **Risk-Adjusted Returns**: Sortino ratio, Calmar ratio
+
+## Data Management
+
+Historical data is stored in `src/backtesting/data/`:
+- Supports multiple symbols (ETH-PERP, BTC-PERP, etc.)
+- Multiple timeframes (1m, 5m, 15m, 1h, 4h, 1d)
+- JSON format for easy processing
+
+## Risk Management
+
+Built-in risk management features:
+- Position sizing based on volatility
+- Maximum drawdown protection
+- Stop-loss and take-profit levels
+- Portfolio-level risk controls
+
+## Development
+
+### Adding New Indicators
+
+Create indicator classes in `src/strategies/indicators/`:
+
+```python
+class MyIndicator:
+    def __init__(self, period):
+        self.period = period
+    
+    def calculate(self, data):
+        # Your calculation logic
+        return result
+```
+
+### Adding New Strategies
+
+1. Create a new strategy file in `src/strategies/`
+2. Extend the `BaseStrategy` class
+3. Implement required methods
+4. Add to strategy factory
+
+### Testing
+
+Run tests to verify functionality:
+
+```bash
+python -m pytest tests/
+```
+
+## API Integration
+
+The system integrates with Hyperliquid DEX through the official SDK:
+- Real-time market data via WebSocket
+- Order placement and management
+- Account information and balances
+- Position tracking
 
 ## Logging
 
-The bot maintains detailed logs in:
+Comprehensive logging system:
+- Trade execution logs
+- Performance metrics
+- Error tracking
+- Debug information
 
-- Console output for important information
-- Log files for debugging and detailed operations
-
-## Disclaimer
-
-This bot is for educational purposes only. Cryptocurrency trading carries significant risks. Always test thoroughly on testnet before using real funds.
-
-## License
-
-MIT
+Logs are stored in `src/logs/` with rotation and archival.
 
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Disclaimer
+
+This software is for educational and research purposes only. Trading cryptocurrencies involves substantial risk of loss. Past performance does not guarantee future results. Use at your own risk.
+
+## Support
+
+For questions and support:
+- Create an issue on GitHub
+- Check the documentation in `docs/`
+- Review example configurations in `src/config/`
+**Ready to start trading?** Begin with backtesting to validate your strategy, then move to paper trading, and only consider live trading when you're confident in your approach.

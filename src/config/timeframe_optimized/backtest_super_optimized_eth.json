@@ -1,0 +1,59 @@
+{
+  "strategy": "super_optimized",
+  "data_file": "src/backtesting/data/ETH-PERP/ETH-PERP-1m.json",
+  "trading": {
+    "market": "ETH-PERP",
+    "positionSize": 0.4,
+    "leverage": 5,
+    "leverageMode": "isolated",
+    "maxPositions": 3,
+    "timeframe": "1m",
+    "profitTarget": 0.012,
+    "testMode": true,
+    "stop_loss_pct": 0.004,
+    "take_profit_pct": 0.012,
+    "max_consecutive_losses": 5,
+    "use_volatility_sizing": true
+  },
+  "position_management": {
+    "max_concurrent_positions": 2,
+    "allow_multiple_symbols": false,
+    "allow_hedging": false,
+    "max_drawdown_per_position": 0.02,
+    "auto_close_on_max_loss": true
+  },
+  "indicators": {
+    "super_optimized": {
+      "momentum_threshold": 0.0003,
+      "volume_threshold": 1.05,
+      "volatility_threshold": 0.0003,
+      "ensemble_weights": {
+        "momentum": 0.3,
+        "neural_network": 0.25,
+        "ml_features": 0.25,
+        "volume_analysis": 0.2
+      },
+      "threshold": 0.2
+    }
+  },
+  "database": {
+    "path": "./db/super_optimized_backtest.db"
+  },
+  "logging": {
+    "console": {
+      "level": "info"
+    },
+    "file": {
+      "level": "debug",
+      "path": "./logs/super_optimized_backtest_debug.log"
+    }
+  },
+  "backtest": {
+    "initialCapital": 10000,
+    "tradingFee": 0.001,
+    "slippage": 0.0005,
+    "startDate": "2024-01-01",
+    "endDate": "2023-12-31",
+    "maxDrawdown": 0.3
+  }
+}
