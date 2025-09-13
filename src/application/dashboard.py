@@ -130,11 +130,16 @@ import streamlit as st
 import pandas as pd
 import json
 import os
+import numpy as np
 from datetime import datetime, timedelta
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from typing import Optional, Dict, List, Tuple
 import logging
+import time
+import threading
+from pathlib import Path
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -404,6 +409,30 @@ class TradingDashboard:
                         metrics['average_win'] = f"${win_trades['profit'].mean():.2f}"
                     if len(loss_trades) > 0:
                         metrics['average_loss'] = f"${loss_trades['profit'].mean():.2f}"
+                
+                # Advanced risk metrics
+                returns = self.trades_df['profit'].values
+                if len(returns) > 1:
+                    # Sharpe Ratio
+                    sharpe_ratio = np.mean(returns) / np.std(returns) * np.sqrt(252) if np.std(returns) > 0 else 0
+                    metrics['sharpe_ratio'] = f"{sharpe_ratio:.3f}"
+                    
+                    # Sortino Ratio (downside deviation)
+                    downside_returns = returns[returns < 0]
+                    if len(downside_returns) > 0:
+                        downside_std = np.std(downside_returns)
+                        sortino_ratio = np.mean(returns) / downside_std * np.sqrt(252) if downside_std > 0 else 0
+                        metrics['sortino_ratio'] = f"{sortino_ratio:.3f}"
+                    
+                    # Profit Factor
+                    gross_profit = win_trades['profit'].sum() if len(win_trades) > 0 else 0
+                    gross_loss = abs(loss_trades['profit'].sum()) if len(loss_trades) > 0 else 0
+                    profit_factor = gross_profit / gross_loss if gross_loss > 0 else float('inf')
+                    metrics['profit_factor'] = f"{profit_factor:.2f}" if profit_factor != float('inf') else "∞"
+                    
+                    # Consecutive wins/losses
+                    metrics['max_consecutive_wins'] = self._calculate_consecutive_wins(returns)
+                    metrics['max_consecutive_losses'] = self._calculate_consecutive_losses(returns)
             
             # Risk metrics
             if 'profit' in self.trades_df.columns:
@@ -416,6 +445,12 @@ class TradingDashboard:
                     running_max = cumulative.expanding().max()
                     drawdown = (cumulative - running_max) / running_max * 100
                     metrics['max_drawdown'] = f"{drawdown.min():.2f}%"
+                    
+                    # Calmar Ratio
+                    if abs(drawdown.min()) > 0:
+                        annual_return = np.mean(returns) * 252 if 'profit' in self.trades_df.columns else 0
+                        calmar_ratio = annual_return / abs(drawdown.min())
+                        metrics['calmar_ratio'] = f"{calmar_ratio:.3f}"
             
             # Time-based metrics
             if 'duration' in self.trades_df.columns:
@@ -428,6 +463,34 @@ class TradingDashboard:
             
         self.performance_metrics = metrics
         return metrics
+    
+    def _calculate_consecutive_wins(self, returns: np.ndarray) -> int:
+        """Calculate maximum consecutive wins."""
+        max_consecutive = 0
+        current_consecutive = 0
+        
+        for pnl in returns:
+            if pnl > 0:
+                current_consecutive += 1
+                max_consecutive = max(max_consecutive, current_consecutive)
+            else:
+                current_consecutive = 0
+        
+        return max_consecutive
+    
+    def _calculate_consecutive_losses(self, returns: np.ndarray) -> int:
+        """Calculate maximum consecutive losses."""
+        max_consecutive = 0
+        current_consecutive = 0
+        
+        for pnl in returns:
+            if pnl < 0:
+                current_consecutive += 1
+                max_consecutive = max(max_consecutive, current_consecutive)
+            else:
+                current_consecutive = 0
+        
+        return max_consecutive
     
     def display_header(self):
         """Display the main dashboard header with title and basic info."""

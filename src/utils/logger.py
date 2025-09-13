@@ -44,7 +44,7 @@ def setup_logger(
     """
     if use_enhanced:
         # Use enhanced logging system
-        enhanced_logger = setup_enhanced_logging(name, log_dir, level, level)
+        enhanced_logger = setup_enhanced_logging(level, log_dir)
         return enhanced_logger.get_logger()
     # Create logger
     logger = logging.getLogger(name)

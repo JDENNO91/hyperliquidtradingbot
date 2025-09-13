@@ -1,29 +1,42 @@
-#!/usr/bin/env python3
 """
 Enhanced Logging System
 
-Provides comprehensive logging across all modules with structured logging,
-performance monitoring, and centralized log management.
+This module provides comprehensive logging capabilities with structured logging,
+performance monitoring, and advanced features for the trading system.
 """
 
 import logging
 import logging.handlers
 import json
-import sys
 import os
-from pathlib import Path
-from typing import Dict, Any, Optional, Union
-from datetime import datetime
-import traceback
+import sys
 import functools
-import time
-from contextlib import contextmanager
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, Any, Optional
+import traceback
+import threading
+from dataclasses import dataclass, asdict
+import colorlog
+
+
+@dataclass
+class LogContext:
+    """Context information for structured logging."""
+    strategy: str = ""
+    market: str = ""
+    timeframe: str = ""
+    trade_id: str = ""
+    session_id: str = ""
+    user_id: str = ""
+    request_id: str = ""
+
 
 class StructuredFormatter(logging.Formatter):
     """Custom formatter for structured JSON logging."""
     
     def format(self, record):
-        """Format log record as structured JSON."""
+        # Create structured log entry
         log_entry = {
             'timestamp': datetime.fromtimestamp(record.created).isoformat(),
             'level': record.levelname,
@@ -36,357 +49,353 @@ class StructuredFormatter(logging.Formatter):
             'process': record.process
         }
         
+        # Add context if available
+        if hasattr(record, 'context') and record.context:
+            log_entry['context'] = asdict(record.context)
+        
         # Add exception info if present
         if record.exc_info:
-            log_entry['exception'] = {
-                'type': record.exc_info[0].__name__ if record.exc_info[0] else None,
-                'message': str(record.exc_info[1]) if record.exc_info[1] else None,
-                'traceback': traceback.format_exception(*record.exc_info)
-            }
+            log_entry['exception'] = self.formatException(record.exc_info)
         
         # Add extra fields
         for key, value in record.__dict__.items():
             if key not in ['name', 'msg', 'args', 'levelname', 'levelno', 'pathname', 
-                          'filename', 'module', 'lineno', 'funcName', 'created', 
-                          'msecs', 'relativeCreated', 'thread', 'threadName', 
-                          'processName', 'process', 'getMessage', 'exc_info', 
-                          'exc_text', 'stack_info']:
+                          'filename', 'module', 'exc_info', 'exc_text', 'stack_info',
+                          'lineno', 'funcName', 'created', 'msecs', 'relativeCreated',
+                          'thread', 'threadName', 'processName', 'process', 'getMessage',
+                          'context']:
                 log_entry[key] = value
         
         return json.dumps(log_entry, default=str)
 
+
 class PerformanceLogger:
-    """Logger for performance metrics and timing."""
+    """Logger for performance metrics and monitoring."""
     
-    def __init__(self, logger: logging.Logger):
-        self.logger = logger
-        self._timers: Dict[str, float] = {}
+    def __init__(self, logger_name: str = "performance"):
+        self.logger = logging.getLogger(logger_name)
+        self.metrics = {}
+        self.lock = threading.Lock()
     
-    def start_timer(self, operation: str):
-        """Start timing an operation."""
-        self._timers[operation] = time.time()
-        self.logger.debug(f"Started timing: {operation}")
+    def log_metric(self, metric_name: str, value: float, context: Optional[LogContext] = None):
+        """Log a performance metric."""
+        with self.lock:
+            self.metrics[metric_name] = {
+                'value': value,
+                'timestamp': datetime.now().isoformat(),
+                'context': asdict(context) if context else None
+            }
+        
+        self.logger.info(f"Metric: {metric_name} = {value}", extra={'context': context})
     
-    def end_timer(self, operation: str, log_level: int = logging.INFO):
-        """End timing an operation and log the duration."""
-        if operation in self._timers:
-            duration = time.time() - self._timers[operation]
-            del self._timers[operation]
-            
-            self.logger.log(log_level, f"Operation completed: {operation}", 
-                          extra={'operation': operation, 'duration_seconds': duration})
-            return duration
-        else:
-            self.logger.warning(f"Timer not found for operation: {operation}")
-            return None
+    def log_trade_metrics(self, trade_data: Dict[str, Any], context: Optional[LogContext] = None):
+        """Log comprehensive trade metrics."""
+        metrics = {
+            'trade_pnl': trade_data.get('pnl', 0),
+            'trade_duration': trade_data.get('duration', 0),
+            'entry_price': trade_data.get('entry_price', 0),
+            'exit_price': trade_data.get('exit_price', 0),
+            'position_size': trade_data.get('size', 0),
+            'fees': trade_data.get('fees', 0)
+        }
+        
+        for metric_name, value in metrics.items():
+            self.log_metric(metric_name, value, context)
     
-    @contextmanager
-    def time_operation(self, operation: str, log_level: int = logging.INFO):
-        """Context manager for timing operations."""
-        self.start_timer(operation)
-        try:
-            yield
-        finally:
-            self.end_timer(operation, log_level)
+    def get_metrics_summary(self) -> Dict[str, Any]:
+        """Get summary of all logged metrics."""
+        with self.lock:
+            return self.metrics.copy()
+
 
 class TradingLogger:
     """Specialized logger for trading operations."""
     
-    def __init__(self, logger: logging.Logger):
-        self.logger = logger
+    def __init__(self, name: str = "trading"):
+        self.logger = logging.getLogger(name)
+        self.performance_logger = PerformanceLogger(f"{name}.performance")
     
     def log_signal(self, signal_type: str, market: str, price: float, 
-                   confidence: float, indicators: Dict[str, Any]):
+                   confidence: float, context: Optional[LogContext] = None):
         """Log trading signal generation."""
-        self.logger.info(f"Trading signal generated: {signal_type}", extra={
-            'signal_type': signal_type,
-            'market': market,
-            'price': price,
-            'confidence': confidence,
-            'indicators': indicators,
-            'event_type': 'signal'
-        })
+        self.logger.info(
+            f"Signal: {signal_type} for {market} at {price} (confidence: {confidence:.2f})",
+            extra={'context': context}
+        )
     
-    def log_trade(self, trade_type: str, market: str, side: str, size: float, 
-                  price: float, order_id: Optional[str] = None):
+    def log_trade_execution(self, action: str, market: str, price: float, 
+                           size: float, context: Optional[LogContext] = None):
         """Log trade execution."""
-        self.logger.info(f"Trade executed: {side} {size} {market} at {price}", extra={
-            'trade_type': trade_type,
-            'market': market,
-            'side': side,
-            'size': size,
-            'price': price,
-            'order_id': order_id,
-            'event_type': 'trade'
-        })
+        self.logger.info(
+            f"Trade: {action} {size} {market} at {price}",
+            extra={'context': context}
+        )
     
-    def log_position_update(self, market: str, position_size: float, 
-                           unrealized_pnl: float, realized_pnl: float):
-        """Log position updates."""
-        self.logger.info(f"Position updated: {market} size={position_size} PnL={unrealized_pnl}", extra={
-            'market': market,
-            'position_size': position_size,
-            'unrealized_pnl': unrealized_pnl,
-            'realized_pnl': realized_pnl,
-            'event_type': 'position'
-        })
-    
-    def log_risk_event(self, event_type: str, market: str, message: str, 
-                       severity: str = 'warning'):
+    def log_risk_event(self, event_type: str, message: str, 
+                      context: Optional[LogContext] = None):
         """Log risk management events."""
-        log_level = logging.WARNING if severity == 'warning' else logging.ERROR
-        self.logger.log(log_level, f"Risk event: {message}", extra={
-            'risk_event_type': event_type,
-            'market': market,
-            'severity': severity,
-            'event_type': 'risk'
-        })
+        self.logger.warning(
+            f"Risk Event: {event_type} - {message}",
+            extra={'context': context}
+        )
+    
+    def log_strategy_switch(self, old_strategy: str, new_strategy: str, 
+                           reason: str, context: Optional[LogContext] = None):
+        """Log strategy switching events."""
+        self.logger.info(
+            f"Strategy Switch: {old_strategy} -> {new_strategy} (reason: {reason})",
+            extra={'context': context}
+        )
+
 
 class EnhancedLogger:
-    """Enhanced logger with structured logging and performance monitoring."""
+    """Main enhanced logger class with all features."""
     
-    def __init__(self, name: str, log_dir: str = "logs", 
-                 console_level: str = "INFO", file_level: str = "DEBUG",
-                 max_file_size: int = 10 * 1024 * 1024,  # 10MB
-                 backup_count: int = 5):
-        """
-        Initialize enhanced logger.
-        
-        Args:
-            name: Logger name
-            log_dir: Directory for log files
-            console_level: Console logging level
-            file_level: File logging level
-            max_file_size: Maximum log file size in bytes
-            backup_count: Number of backup files to keep
-        """
+    def __init__(self, name: str = "hyperliquid_trading", 
+                 log_level: str = "INFO",
+                 log_dir: str = "logs"):
         self.name = name
+        self.log_level = getattr(logging, log_level.upper())
         self.log_dir = Path(log_dir)
         self.log_dir.mkdir(exist_ok=True)
         
-        # Create logger
-        self.logger = logging.getLogger(name)
-        self.logger.setLevel(logging.DEBUG)
+        # Initialize loggers
+        self.main_logger = self._setup_main_logger()
+        self.trading_logger = TradingLogger(f"{name}.trading")
+        self.performance_logger = PerformanceLogger(f"{name}.performance")
+        self.error_logger = self._setup_error_logger()
         
-        # Clear existing handlers
-        self.logger.handlers.clear()
+        # Context management
+        self._context = LogContext()
+        self._context_lock = threading.Lock()
+    
+    def _setup_main_logger(self) -> logging.Logger:
+        """Setup the main application logger."""
+        logger = logging.getLogger(self.name)
+        logger.setLevel(self.log_level)
         
-        # Console handler
+        # Console handler with colors
         console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setLevel(getattr(logging, console_level.upper()))
-        console_formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        console_formatter = colorlog.ColoredFormatter(
+            '%(log_color)s%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S',
+            log_colors={
+                'DEBUG': 'cyan',
+                'INFO': 'green',
+                'WARNING': 'yellow',
+                'ERROR': 'red',
+                'CRITICAL': 'red,bg_white'
+            }
         )
         console_handler.setFormatter(console_formatter)
-        self.logger.addHandler(console_handler)
+        logger.addHandler(console_handler)
         
-        # File handler with rotation
-        log_file = self.log_dir / f"{name}.log"
+        # File handler with structured logging
         file_handler = logging.handlers.RotatingFileHandler(
-            log_file, maxBytes=max_file_size, backupCount=backup_count
+            self.log_dir / f"{self.name}.log",
+            maxBytes=10*1024*1024,  # 10MB
+            backupCount=5
         )
-        file_handler.setLevel(getattr(logging, file_level.upper()))
         file_formatter = StructuredFormatter()
         file_handler.setFormatter(file_formatter)
-        self.logger.addHandler(file_handler)
+        logger.addHandler(file_handler)
+        
+        return logger
+    
+    def _setup_error_logger(self) -> logging.Logger:
+        """Setup specialized error logger."""
+        error_logger = logging.getLogger(f"{self.name}.error")
+        error_logger.setLevel(logging.ERROR)
         
         # Error file handler
-        error_file = self.log_dir / f"{name}_errors.log"
         error_handler = logging.handlers.RotatingFileHandler(
-            error_file, maxBytes=max_file_size, backupCount=backup_count
+            self.log_dir / f"{self.name}_errors.log",
+            maxBytes=5*1024*1024,  # 5MB
+            backupCount=3
         )
-        error_handler.setLevel(logging.ERROR)
-        error_handler.setFormatter(file_formatter)
-        self.logger.addHandler(error_handler)
+        error_formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s\n%(pathname)s:%(lineno)d'
+        )
+        error_handler.setFormatter(error_formatter)
+        error_logger.addHandler(error_handler)
         
-        # Performance logger
-        self.performance = PerformanceLogger(self.logger)
-        
-        # Trading logger
-        self.trading = TradingLogger(self.logger)
+        return error_logger
     
-    def get_logger(self) -> logging.Logger:
-        """Get the underlying logger instance."""
-        return self.logger
+    def set_context(self, **kwargs):
+        """Set logging context."""
+        with self._context_lock:
+            for key, value in kwargs.items():
+                if hasattr(self._context, key):
+                    setattr(self._context, key, value)
     
-    def log_system_info(self):
-        """Log system information."""
-        import platform
-        import psutil
-        
-        system_info = {
-            'platform': platform.platform(),
-            'python_version': platform.python_version(),
-            'cpu_count': psutil.cpu_count(),
-            'memory_total': psutil.virtual_memory().total,
-            'disk_usage': psutil.disk_usage('/').percent
-        }
-        
-        self.logger.info("System information", extra={
-            'system_info': system_info,
-            'event_type': 'system'
-        })
+    def clear_context(self):
+        """Clear logging context."""
+        with self._context_lock:
+            self._context = LogContext()
+    
+    def get_context(self) -> LogContext:
+        """Get current logging context."""
+        with self._context_lock:
+            return self._context
+    
+    def debug(self, message: str, **kwargs):
+        """Log debug message."""
+        self.main_logger.debug(message, extra={'context': self._context, **kwargs})
+    
+    def info(self, message: str, **kwargs):
+        """Log info message."""
+        self.main_logger.info(message, extra={'context': self._context, **kwargs})
+    
+    def warning(self, message: str, **kwargs):
+        """Log warning message."""
+        self.main_logger.warning(message, extra={'context': self._context, **kwargs})
+    
+    def error(self, message: str, exc_info: bool = True, **kwargs):
+        """Log error message."""
+        self.main_logger.error(message, extra={'context': self._context, **kwargs}, exc_info=exc_info)
+        self.error_logger.error(message, exc_info=exc_info)
+    
+    def critical(self, message: str, exc_info: bool = True, **kwargs):
+        """Log critical message."""
+        self.main_logger.critical(message, extra={'context': self._context, **kwargs}, exc_info=exc_info)
+        self.error_logger.critical(message, exc_info=exc_info)
+    
+    def log_exception(self, message: str = "Exception occurred"):
+        """Log current exception with full traceback."""
+        self.error(f"{message}: {traceback.format_exc()}")
+    
+    def log_performance(self, metric_name: str, value: float, **kwargs):
+        """Log performance metric."""
+        self.performance_logger.log_metric(metric_name, value, self._context)
+    
+    def log_trade(self, trade_data: Dict[str, Any]):
+        """Log trade data."""
+        self.trading_logger.log_trade_execution(
+            trade_data.get('action', 'UNKNOWN'),
+            trade_data.get('market', 'UNKNOWN'),
+            trade_data.get('price', 0),
+            trade_data.get('size', 0),
+            self._context
+        )
+        self.performance_logger.log_trade_metrics(trade_data, self._context)
+    
+    def get_metrics_summary(self) -> Dict[str, Any]:
+        """Get performance metrics summary."""
+        return self.performance_logger.get_metrics_summary()
 
-def setup_enhanced_logging(name: str, log_dir: str = "logs", 
-                          console_level: str = "INFO", file_level: str = "DEBUG") -> EnhancedLogger:
-    """
-    Setup enhanced logging for a module.
-    
-    Args:
-        name: Logger name (usually __name__)
-        log_dir: Directory for log files
-        console_level: Console logging level
-        file_level: File logging level
-        
-    Returns:
-        EnhancedLogger instance
-    """
-    return EnhancedLogger(name, log_dir, console_level, file_level)
 
-def log_function_calls(logger: logging.Logger, level: int = logging.DEBUG):
+# Global logger instance
+_global_logger: Optional[EnhancedLogger] = None
+
+
+def get_logger(name: str = "hyperliquid_trading") -> EnhancedLogger:
+    """Get or create global logger instance."""
+    global _global_logger
+    if _global_logger is None:
+        _global_logger = EnhancedLogger(name)
+    return _global_logger
+
+
+def setup_logging(log_level: str = "INFO", log_dir: str = "logs"):
+    """Setup global logging configuration."""
+    global _global_logger
+    _global_logger = EnhancedLogger(log_level=log_level, log_dir=log_dir)
+    return _global_logger
+
+
+# Convenience functions
+def debug(message: str, **kwargs):
+    """Log debug message using global logger."""
+    get_logger().debug(message, **kwargs)
+
+
+def info(message: str, **kwargs):
+    """Log info message using global logger."""
+    get_logger().info(message, **kwargs)
+
+
+def warning(message: str, **kwargs):
+    """Log warning message using global logger."""
+    get_logger().warning(message, **kwargs)
+
+
+def error(message: str, **kwargs):
+    """Log error message using global logger."""
+    get_logger().error(message, **kwargs)
+
+
+def critical(message: str, **kwargs):
+    """Log critical message using global logger."""
+    get_logger().critical(message, **kwargs)
+
+
+def setup_enhanced_logging(log_level: str = "INFO", log_dir: str = "logs") -> EnhancedLogger:
+    """Setup enhanced logging system."""
+    return setup_logging(log_level, log_dir)
+
+
+def get_enhanced_logger(name: str = "hyperliquid_trading") -> EnhancedLogger:
+    """Get enhanced logger instance."""
+    return get_logger(name)
+
+
+def log_function_calls(func):
     """Decorator to log function calls."""
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            logger.log(level, f"Calling {func.__name__}", extra={
-                'function': func.__name__,
-                'args': str(args)[:200],  # Truncate long args
-                'kwargs': str(kwargs)[:200],
-                'event_type': 'function_call'
-            })
-            
-            start_time = time.time()
-            try:
-                result = func(*args, **kwargs)
-                duration = time.time() - start_time
-                
-                logger.log(level, f"Completed {func.__name__}", extra={
-                    'function': func.__name__,
-                    'duration_seconds': duration,
-                    'success': True,
-                    'event_type': 'function_completion'
-                })
-                
-                return result
-            except Exception as e:
-                duration = time.time() - start_time
-                logger.error(f"Failed {func.__name__}: {e}", extra={
-                    'function': func.__name__,
-                    'duration_seconds': duration,
-                    'success': False,
-                    'error': str(e),
-                    'event_type': 'function_error'
-                }, exc_info=True)
-                raise
-        
-        return wrapper
-    return decorator
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        logger = get_logger()
+        logger.debug(f"Calling {func.__name__} with args={args}, kwargs={kwargs}")
+        try:
+            result = func(*args, **kwargs)
+            logger.debug(f"{func.__name__} completed successfully")
+            return result
+        except Exception as e:
+            logger.error(f"{func.__name__} failed with error: {e}")
+            raise
+    return wrapper
 
-def log_async_function_calls(logger: logging.Logger, level: int = logging.DEBUG):
+
+def log_async_function_calls(func):
     """Decorator to log async function calls."""
-    def decorator(func):
-        @functools.wraps(func)
-        async def wrapper(*args, **kwargs):
-            logger.log(level, f"Calling async {func.__name__}", extra={
-                'function': func.__name__,
-                'args': str(args)[:200],
-                'kwargs': str(kwargs)[:200],
-                'event_type': 'async_function_call'
-            })
-            
-            start_time = time.time()
-            try:
-                result = await func(*args, **kwargs)
-                duration = time.time() - start_time
-                
-                logger.log(level, f"Completed async {func.__name__}", extra={
-                    'function': func.__name__,
-                    'duration_seconds': duration,
-                    'success': True,
-                    'event_type': 'async_function_completion'
-                })
-                
-                return result
-            except Exception as e:
-                duration = time.time() - start_time
-                logger.error(f"Failed async {func.__name__}: {e}", extra={
-                    'function': func.__name__,
-                    'duration_seconds': duration,
-                    'success': False,
-                    'error': str(e),
-                    'event_type': 'async_function_error'
-                }, exc_info=True)
-                raise
-        
-        return wrapper
-    return decorator
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        logger = get_logger()
+        logger.debug(f"Calling async {func.__name__} with args={args}, kwargs={kwargs}")
+        try:
+            result = await func(*args, **kwargs)
+            logger.debug(f"Async {func.__name__} completed successfully")
+            return result
+        except Exception as e:
+            logger.error(f"Async {func.__name__} failed with error: {e}")
+            raise
+    return wrapper
 
-# Global logger instances
-_loggers: Dict[str, EnhancedLogger] = {}
-
-def get_enhanced_logger(name: str, log_dir: str = "logs") -> EnhancedLogger:
-    """
-    Get or create an enhanced logger instance.
-    
-    Args:
-        name: Logger name
-        log_dir: Directory for log files
-        
-    Returns:
-        EnhancedLogger instance
-    """
-    if name not in _loggers:
-        _loggers[name] = EnhancedLogger(name, log_dir)
-    return _loggers[name]
-
-def cleanup_logs(log_dir: str = "logs", days_to_keep: int = 30):
-    """
-    Clean up old log files.
-    
-    Args:
-        log_dir: Directory containing log files
-        days_to_keep: Number of days to keep log files
-    """
-    log_path = Path(log_dir)
-    if not log_path.exists():
-        return
-    
-    cutoff_time = time.time() - (days_to_keep * 24 * 60 * 60)
-    
-    for log_file in log_path.glob("*.log*"):
-        if log_file.stat().st_mtime < cutoff_time:
-            log_file.unlink()
-            print(f"Deleted old log file: {log_file}")
 
 if __name__ == "__main__":
-    """CLI for log management."""
-    import argparse
+    # Example usage
+    logger = setup_logging("DEBUG")
     
-    parser = argparse.ArgumentParser(description="Enhanced Logging System")
-    parser.add_argument("--cleanup", action="store_true", help="Clean up old log files")
-    parser.add_argument("--days", type=int, default=30, help="Days to keep log files")
-    parser.add_argument("--test", action="store_true", help="Test logging system")
+    # Set context
+    logger.set_context(strategy="BBRSI", market="ETH-PERP", trade_id="12345")
     
-    args = parser.parse_args()
+    # Log messages
+    logger.info("Starting trading session")
+    logger.debug("Strategy parameters loaded")
     
-    if args.cleanup:
-        cleanup_logs(days_to_keep=args.days)
-        print(f"Cleaned up log files older than {args.days} days")
+    # Log trade
+    trade_data = {
+        'action': 'BUY',
+        'market': 'ETH-PERP',
+        'price': 2500.0,
+        'size': 0.1,
+        'pnl': 25.0,
+        'duration': 30
+    }
+    logger.log_trade(trade_data)
     
-    if args.test:
-        # Test the logging system
-        logger = get_enhanced_logger("test_logger")
-        
-        logger.logger.info("Testing enhanced logging system")
-        logger.logger.warning("This is a warning message")
-        logger.logger.error("This is an error message")
-        
-        # Test performance logging
-        with logger.performance.time_operation("test_operation"):
-            time.sleep(0.1)
-        
-        # Test trading logging
-        logger.trading.log_signal("LONG", "ETH-PERP", 4500.0, 0.8, {"rsi": 30, "bb": "lower"})
-        logger.trading.log_trade("MARKET", "ETH-PERP", "LONG", 0.1, 4500.0)
-        
-        print("Logging test completed. Check logs/ directory for output.")
+    # Log performance metric
+    logger.log_performance("sharpe_ratio", 1.85)
+    
+    # Get metrics summary
+    metrics = logger.get_metrics_summary()
+    print(f"Metrics: {metrics}")
