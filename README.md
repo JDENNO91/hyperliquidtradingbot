@@ -1,4 +1,4 @@
-# Hyperliquid Python Trading Bot
+# Hyperliquid Python Trading Bot by Joseph Dennis
 
 A comprehensive algorithmic trading system for the Hyperliquid DEX, featuring backtesting, live trading, and strategy development capabilities.
 
