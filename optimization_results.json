@@ -1,0 +1,39 @@
+{
+  "best_parameters": {
+    "rsi_period": 18,
+    "rsi_overbought": 65,
+    "rsi_oversold": 33,
+    "bollinger_period": 12,
+    "bollinger_std": 2.178577831216874,
+    "adx_period": 20,
+    "adx_threshold": 33
+  },
+  "best_fitness": 1.0,
+  "generation": 21,
+  "population_size": 30,
+  "convergence_generation": 0,
+  "optimization_history": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ]
+}

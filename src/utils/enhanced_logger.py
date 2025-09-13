@@ -339,6 +339,14 @@ def get_enhanced_logger(name: str = "hyperliquid_trading") -> EnhancedLogger:
     return get_logger(name)
 
 
+def get_logger(name: str = "hyperliquid_trading") -> EnhancedLogger:
+    """Get or create global logger instance."""
+    global _global_logger
+    if _global_logger is None:
+        _global_logger = EnhancedLogger(name)
+    return _global_logger
+
+
 def log_function_calls(func):
     """Decorator to log function calls."""
     @functools.wraps(func)

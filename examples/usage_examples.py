@@ -13,7 +13,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from config.validator import validate_config_file, ConfigValidator
 from utils.enhanced_logger import get_logger, setup_enhanced_logging
-from utils.error_handler import get_error_handler, error_handler, ErrorContext, TradingError
+from utils.error_handler import get_error_handler, ErrorContext, TradingError, ErrorSeverity
+from utils.error_handler import error_handler as error_handler_decorator
 from strategies.optimization.genetic_optimizer import create_bb_rsi_optimizer, create_scalping_optimizer
 from backtesting.improved_backtester import ImprovedBacktester
 import json
@@ -133,16 +134,16 @@ def example_3_error_handling():
     # Example of handling different types of errors
     try:
         # Simulate a trading error
-        raise TradingError("Insufficient balance for trade", context=context)
+        raise TradingError("Insufficient balance for trade", ErrorSeverity.HIGH, context)
     except TradingError as e:
         success = error_handler.handle_error(e, context)
         print(f"Error handled successfully: {success}")
     
     # Example with error handler decorator
-    @error_handler("strategy", "calculate_signal")
+    @error_handler_decorator("strategy", "calculate_signal")
     def risky_calculation(x):
         if x < 0:
-            raise TradingError("Negative value not allowed")
+            raise TradingError("Negative value not allowed", ErrorSeverity.MEDIUM)
         return x * 2
     
     # Test the decorated function
@@ -150,8 +151,12 @@ def example_3_error_handling():
     print(f"Safe calculation result: {result}")
     
     # This will be handled by the decorator
-    result = risky_calculation(-1)
-    print(f"Error handled by decorator: {result}")
+    try:
+        result = risky_calculation(-1)
+        print(f"Error handled by decorator: {result}")
+    except TradingError as e:
+        print(f"Error caught and handled: {e}")
+        result = None
 
 
 def example_4_strategy_optimization():
