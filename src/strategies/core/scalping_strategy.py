@@ -8,12 +8,8 @@ import logging
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 
-from core.base_strategy import BaseStrategy, Signal, Position
-from ..indicators.microprice import (
-    calculate_microprice_from_ohlcv,
-    get_microprice_signals,
-    MicropriceData
-)
+from src.core.base_strategy import BaseStrategy, Signal, Position
+# Microprice functionality removed - using simpler indicators
 
 class ScalpingStrategy(BaseStrategy):
     """

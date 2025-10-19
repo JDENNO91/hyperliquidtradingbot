@@ -25,7 +25,7 @@ Target: 10-20 trades per day on 1-5 minute timeframes
 import logging
 from typing import Dict, Any, Optional, List
 
-from core.base_strategy import BaseStrategy, Signal, Position
+from src.core.base_strategy import BaseStrategy, Signal, Position
 from ..indicators.rsi import calculate_rsi
 
 class RSIScalpingStrategy(BaseStrategy):

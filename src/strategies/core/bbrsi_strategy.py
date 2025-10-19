@@ -10,15 +10,11 @@ from typing import Dict, Any, Optional, List
 import numpy as np
 from datetime import datetime
 
-from core.base_strategy import BaseStrategy, Signal, Position
+from src.core.base_strategy import BaseStrategy, Signal, Position
 from ..indicators.rsi import calculate_rsi
 from ..indicators.bollinger_bands import calculate_bollinger_bands
 from ..indicators.adx import calculate_adx
-from ..indicators.microprice import (
-    calculate_microprice_from_ohlcv,
-    get_microprice_signals,
-    MicropriceData
-)
+# Microprice functionality removed - using simpler indicators
 
 class BBRSIStrategy(BaseStrategy):
     """

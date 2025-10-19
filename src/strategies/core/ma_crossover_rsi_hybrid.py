@@ -20,7 +20,7 @@ import logging
 from typing import Dict, Any, Optional, List
 import numpy as np
 
-from core.base_strategy import BaseStrategy, Signal, Position
+from src.core.base_strategy import BaseStrategy, Signal, Position
 from ..indicators.ema import calculate_ema, calculate_sma
 from ..indicators.rsi import calculate_rsi
 

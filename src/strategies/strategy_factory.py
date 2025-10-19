@@ -7,7 +7,14 @@ It allows dynamic strategy selection and instantiation.
 
 from typing import Dict, Any, Type
 import logging
-from core.base_strategy import BaseStrategy
+import sys
+from pathlib import Path
+
+# Add project root to path for imports
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
+
+from src.core.base_strategy import BaseStrategy
 
 # Import core strategies
 from .core.bbrsi_strategy import BBRSIStrategy
