@@ -1,4 +1,4 @@
-# 🚀 Hyperliquid Python Trading Bot
+# Hyperliquid Python Trading Bot
 
 **Professional cryptocurrency trading system for Hyperliquid**
 
@@ -9,32 +9,32 @@ Automated trading strategies with backtesting, live simulation, and production-r
 
 ---
 
-## ✨ Features
+## Features
 
-- ✅ **Production-Ready Strategies** - 4 profitable, tested strategies
-- ✅ **High Frequency Trading** - Up to 44 trades/day capability
-- ✅ **Backtesting Engine** - Test strategies on historical data
-- ✅ **Live Simulation** - Paper trading with real market data
-- ✅ **Risk Management** - Built-in position sizing and stop losses
-- ✅ **Multiple Timeframes** - 1m, 5m, 15m, 30m, 1h support
-- ✅ **Easy Strategy Switching** - Interactive selector or one-liners
+- **Production-Ready Strategies** - 4 profitable, tested strategies
+- **High Frequency Trading** - Up to 44 trades/day capability
+- **Backtesting Engine** - Test strategies on historical data
+- **Live Simulation** - Paper trading with real market data
+- **Risk Management** - Built-in position sizing and stop losses
+- **Multiple Timeframes** - 1m, 5m, 15m, 30m, 1h support
+- **Easy Strategy Switching** - Interactive selector or one-liners
 
 ---
 
-## 🏆 Best Strategies (7-Day Backtests)
+## Best Strategies (7-Day Backtests)
 
 | Strategy | Trades/Day | Return | Max DD | Win Rate |
 |----------|------------|--------|--------|----------|
-| **RSI Scalping Standard** 🏆 | 2.3 | 97% | 2.94% | 6.2% |
-| RSI Scalping Extreme ⚡ | 3.6 | 95% | 5.31% | 4.0% |
-| MA+RSI Hybrid 🎯 | 1.4 | 96% | 3.53% | 10% |
-| RSI Scalping Ultra ⚠️ | 44 | 47% | 53% | 0.3% |
+| **RSI Scalping Standard** | 2.3 | 97% | 2.94% | 6.2% |
+| RSI Scalping Extreme | 3.6 | 95% | 5.31% | 4.0% |
+| MA+RSI Hybrid | 1.4 | 96% | 3.53% | 10% |
+| RSI Scalping Ultra | 44 | 47% | 53% | 0.3% |
 
 *All tested on ETH-PERP*
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Setup
 ```bash
@@ -66,7 +66,7 @@ python3 src/cli/backtest.py --config src/config/production/rsi_scalping/standard
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 hyperliquidpython/
@@ -193,7 +193,7 @@ Available: 1m, 5m, 10m, 15m, 30m, 1h
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 - **[QUICK_START.md](QUICK_START.md)** - Simple getting started guide
 - **[QUICK_COMMANDS.md](QUICK_COMMANDS.md)** - Command reference
@@ -203,7 +203,7 @@ Available: 1m, 5m, 10m, 15m, 30m, 1h
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run unit tests

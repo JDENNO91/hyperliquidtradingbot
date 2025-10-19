@@ -14,7 +14,7 @@ source .venv/bin/activate
 
 ---
 
-## 🏆 Production Strategies (All Profitable)
+## Production Strategies (All Profitable)
 
 ### 🥇 BEST: RSI Scalping Standard 5m
 ```bash
