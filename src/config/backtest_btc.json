@@ -1,4 +1,6 @@
 {
+  "strategy": "bbrsi",
+  "data_file": "src/backtesting/data/BTC-PERP/BTC-PERP-15m.json",
   "trading": {
       "market": "BTC-PERP",
       "positionSize": 0.1,

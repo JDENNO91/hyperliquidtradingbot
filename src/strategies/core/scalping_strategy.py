@@ -9,6 +9,11 @@ from typing import Dict, Any, Optional, List
 from datetime import datetime
 
 from core.base_strategy import BaseStrategy, Signal, Position
+from ..indicators.microprice import (
+    calculate_microprice_from_ohlcv,
+    get_microprice_signals,
+    MicropriceData
+)
 
 class ScalpingStrategy(BaseStrategy):
     """
@@ -117,6 +122,10 @@ class ScalpingStrategy(BaseStrategy):
         recent_low = min(recent_lows[-10:])    # 10-period low
         price_position = (current_price - recent_low) / (recent_high - recent_low) if recent_high != recent_low else 0.5
         
+        # Calculate microprice for enhanced scalping signals
+        current_data = data[index-20:index+1]
+        microprice_data = calculate_microprice_from_ohlcv(current_data, -1)
+        
         return {
             'price_change_1m': price_change_1m,
             'price_change_5m': price_change_5m,
@@ -126,7 +135,8 @@ class ScalpingStrategy(BaseStrategy):
             'price_position': price_position,
             'current_price': current_price,
             'current_volume': current_volume,
-            'atr': atr
+            'atr': atr,
+            'microprice_data': microprice_data
         }
     
     def generate_signal(self, data: List[Dict[str, Any]], index: int) -> Signal:
@@ -211,6 +221,28 @@ class ScalpingStrategy(BaseStrategy):
             long_score -= 1
             long_signals.append('Very high volatility - CAUTION')
         
+        # 9. Microprice analysis for enhanced scalping precision
+        microprice_data = indicators.get('microprice_data')
+        if microprice_data:
+            microprice_signals = get_microprice_signals(microprice_data, threshold=0.0003)  # Lower threshold for scalping
+            volume_imbalance = abs(microprice_data.volume_imbalance)
+            
+            # Microprice confirmation for LONG scalping
+            if microprice_signals['signal'] == 'BULLISH':
+                long_score += 2
+                long_signals.append('Microprice bullish confirmation')
+            elif microprice_signals['signal'] == 'NONE' and volume_imbalance < 0.15:
+                long_score += 1
+                long_signals.append('Microprice neutral, balanced')
+            elif microprice_signals['signal'] == 'BEARISH':
+                long_score -= 1
+                long_signals.append('Microprice bearish (reducing)')
+            
+            # Volume imbalance for scalping
+            if volume_imbalance > 0.25:
+                long_score += 1
+                long_signals.append('Strong volume imbalance')
+        
         # IMPROVED SHORT signal conditions
         short_score = 0
         short_signals = []
@@ -246,6 +278,24 @@ class ScalpingStrategy(BaseStrategy):
             short_score += 1
             short_signals.append('Near resistance')
         
+        # 6. Microprice analysis for SHORT scalping
+        if microprice_data:
+            # Microprice confirmation for SHORT scalping
+            if microprice_signals['signal'] == 'BEARISH':
+                short_score += 2
+                short_signals.append('Microprice bearish confirmation')
+            elif microprice_signals['signal'] == 'NONE' and volume_imbalance < 0.15:
+                short_score += 1
+                short_signals.append('Microprice neutral, balanced')
+            elif microprice_signals['signal'] == 'BULLISH':
+                short_score -= 1
+                short_signals.append('Microprice bullish (reducing)')
+            
+            # Volume imbalance for SHORT scalping
+            if volume_imbalance > 0.25:
+                short_score += 1
+                short_signals.append('Strong volume imbalance')
+        
         # Generate signals with minimum score requirement - extremely aggressive for more trades
         min_score = 1  # Extremely low threshold for maximum opportunities
         
@@ -258,7 +308,10 @@ class ScalpingStrategy(BaseStrategy):
                 'volume_ratio': volume_ratio,
                 'volatility': volatility,
                 'price_position': price_position,
-                'score': long_score
+                'score': long_score,
+                'microprice': microprice_data.microprice if microprice_data else None,
+                'microprice_signal': microprice_signals['signal'] if microprice_data else None,
+                'volume_imbalance': microprice_data.volume_imbalance if microprice_data else None
             }, current_price, self.market, data[index].get('timestamp', 0), current_price * 0.997)
         
         elif short_score >= min_score:
@@ -270,7 +323,10 @@ class ScalpingStrategy(BaseStrategy):
                 'volume_ratio': volume_ratio,
                 'volatility': volatility,
                 'price_position': price_position,
-                'score': short_score
+                'score': short_score,
+                'microprice': microprice_data.microprice if microprice_data else None,
+                'microprice_signal': microprice_signals['signal'] if microprice_data else None,
+                'volume_imbalance': microprice_data.volume_imbalance if microprice_data else None
             }, current_price, self.market, data[index].get('timestamp', 0), current_price * 1.003)
         
         return Signal('NONE', 0.0, 'No scalping opportunity', {})

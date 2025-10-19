@@ -617,7 +617,13 @@ Examples:
         # Initialize exchange clients
         logger.info("Initializing exchange clients...")
         info = setup_clients()
-        exchange = Exchange(info)
+        
+        # Create a mock exchange for simulation (no real trading)
+        class MockExchange:
+            def __init__(self, info):
+                self.info = info
+        
+        exchange = MockExchange(info)
         
         # Create and run simulation
         logger.info("Starting live simulation...")

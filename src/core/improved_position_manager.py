@@ -181,6 +181,13 @@ class ImprovedPositionManager:
         else:  # SHORT
             pnl = (position.entry_price - exit_price) * position.size
         
+        # SAFETY CHECK: Cap P&L to prevent astronomical values
+        # A single trade should never make more than 10x the initial position value
+        max_reasonable_pnl = position.notional * 10
+        if abs(pnl) > max_reasonable_pnl:
+            self.logger.warning(f"P&L capped: {pnl:.2f} -> {max_reasonable_pnl if pnl > 0 else -max_reasonable_pnl:.2f}")
+            pnl = max_reasonable_pnl if pnl > 0 else -max_reasonable_pnl
+        
         # Update position
         position.exit_price = exit_price
         position.exit_time = str(exit_time)

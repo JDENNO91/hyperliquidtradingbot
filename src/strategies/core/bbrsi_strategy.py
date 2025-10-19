@@ -14,6 +14,11 @@ from core.base_strategy import BaseStrategy, Signal, Position
 from ..indicators.rsi import calculate_rsi
 from ..indicators.bollinger_bands import calculate_bollinger_bands
 from ..indicators.adx import calculate_adx
+from ..indicators.microprice import (
+    calculate_microprice_from_ohlcv,
+    get_microprice_signals,
+    MicropriceData
+)
 
 class BBRSIStrategy(BaseStrategy):
     """
@@ -140,8 +145,14 @@ class BBRSIStrategy(BaseStrategy):
         bb_width = (bb['upper'] - bb['lower']) / current_price
         volatility = bb_width
         
+        # Calculate microprice for enhanced market microstructure analysis
+        current_data = data[start_idx:end_idx]
+        microprice_data = calculate_microprice_from_ohlcv(current_data, -1)
+        
         # Debug logging
         self.logger.debug(f"Index {index}: Indicators computed - RSI: {rsi:.2f}, BB: {bb}, ADX: {adx_data['adx']:.2f}, Volatility: {volatility:.4f}")
+        if microprice_data:
+            self.logger.debug(f"Index {index}: Microprice: {microprice_data.microprice:.4f}, Volume Imbalance: {microprice_data.volume_imbalance:.3f}")
         
         return {
             'rsi': rsi,
@@ -149,7 +160,8 @@ class BBRSIStrategy(BaseStrategy):
             'adx': adx_data['adx'],
             'plus_di': adx_data['plus_di'],
             'minus_di': adx_data['minus_di'],
-            'volatility': volatility
+            'volatility': volatility,
+            'microprice_data': microprice_data
         }
     
     def generate_signal(self, data: List[Dict[str, Any]], index: int) -> Signal:
@@ -323,7 +335,29 @@ class BBRSIStrategy(BaseStrategy):
             long_score += 1
             long_signals.append('Weak uptrend')
         
-        # 6. Market regime filter - only trade in favorable conditions
+        # 6. Microprice analysis for enhanced market microstructure insights
+        microprice_data = indicators.get('microprice_data')
+        if microprice_data:
+            microprice_signals = get_microprice_signals(microprice_data, threshold=0.0005)
+            volume_imbalance = abs(microprice_data.volume_imbalance)
+            
+            # Microprice confirmation for LONG signals
+            if microprice_signals['signal'] == 'BULLISH':
+                long_score += 2
+                long_signals.append('Microprice bullish confirmation')
+            elif microprice_signals['signal'] == 'NONE' and volume_imbalance < 0.2:
+                long_score += 1
+                long_signals.append('Microprice neutral, balanced volume')
+            elif microprice_signals['signal'] == 'BEARISH':
+                long_score -= 1  # Reduce score if microprice contradicts
+                long_signals.append('Microprice bearish (reducing score)')
+            
+            # Volume imbalance analysis
+            if volume_imbalance > 0.3:
+                long_score += 1
+                long_signals.append('Strong volume imbalance')
+        
+        # 7. Market regime filter - only trade in favorable conditions
         if adx < 15:  # Low trend strength - avoid ranging markets
             long_score -= 2
             long_signals.append('Low trend strength - AVOID')
@@ -383,6 +417,24 @@ class BBRSIStrategy(BaseStrategy):
             short_score += 1
             short_signals.append('Weak downtrend')
         
+        # 6. Microprice analysis for SHORT signals
+        if microprice_data:
+            # Microprice confirmation for SHORT signals
+            if microprice_signals['signal'] == 'BEARISH':
+                short_score += 2
+                short_signals.append('Microprice bearish confirmation')
+            elif microprice_signals['signal'] == 'NONE' and volume_imbalance < 0.2:
+                short_score += 1
+                short_signals.append('Microprice neutral, balanced volume')
+            elif microprice_signals['signal'] == 'BULLISH':
+                short_score -= 1  # Reduce score if microprice contradicts
+                short_signals.append('Microprice bullish (reducing score)')
+            
+            # Volume imbalance analysis for SHORT
+            if volume_imbalance > 0.3:
+                short_score += 1
+                short_signals.append('Strong volume imbalance')
+        
         # Debug logging for signal conditions
         self.logger.debug(f"Signal conditions - Long score: {long_score}, Short score: {short_score}")
         self.logger.debug(f"Long signals: {long_signals}")
@@ -408,7 +460,10 @@ class BBRSIStrategy(BaseStrategy):
                 'price': current_price,
                 'volatility': volatility,
                 'score': long_score,
-                'signals': long_signals
+                'signals': long_signals,
+                'microprice': microprice_data.microprice if microprice_data else None,
+                'microprice_signal': microprice_signals['signal'] if microprice_data else None,
+                'volume_imbalance': microprice_data.volume_imbalance if microprice_data else None
             }, current_price, self.market, data[index].get('timestamp', 0), stop_loss)
             self.logger.debug(f"Generated LONG signal: {signal}")
             return signal
@@ -427,7 +482,10 @@ class BBRSIStrategy(BaseStrategy):
                 'price': current_price,
                 'volatility': volatility,
                 'score': short_score,
-                'signals': short_signals
+                'signals': short_signals,
+                'microprice': microprice_data.microprice if microprice_data else None,
+                'microprice_signal': microprice_signals['signal'] if microprice_data else None,
+                'volume_imbalance': microprice_data.volume_imbalance if microprice_data else None
             }, current_price, self.market, data[index].get('timestamp', 0), stop_loss)
             self.logger.debug(f"Generated SHORT signal: {signal}")
             return signal

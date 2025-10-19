@@ -58,4 +58,20 @@ def calculate_ema(price_data: List[float], period: int) -> List[Optional[float]]
 
     return ema_values
 
-__all__ = ['short_ema', 'long_ema']
+def calculate_sma(price_data: List[float], period: int) -> float:
+    """
+    Calculate the Simple Moving Average (SMA) for the most recent period.
+    
+    Args:
+        price_data: List of prices (should have at least 'period' elements)
+        period: Number of periods for the SMA
+        
+    Returns:
+        SMA value as float, or 0.0 if insufficient data
+    """
+    if len(price_data) < period:
+        return 0.0
+    
+    return sum(price_data[-period:]) / period
+
+__all__ = ['short_ema', 'long_ema', 'calculate_sma', 'calculate_ema']

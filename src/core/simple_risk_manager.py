@@ -94,23 +94,37 @@ class SimpleRiskManager:
         if capital <= 0 or entry_price <= 0:
             return 0.0
         
+        # FIX: Use INITIAL capital for position sizing to prevent exponential growth
+        # This ensures position sizes don't compound based on profits
+        sizing_capital = self.initial_capital
+        
         # Calculate risk amount
-        risk_amount = capital * self.max_risk_per_trade
+        risk_amount = sizing_capital * self.max_risk_per_trade
         
-        # Calculate price risk
-        price_risk = abs(entry_price - stop_loss)
-        if price_risk <= 0:
-            # Default to 1% price risk if no stop loss
-            price_risk = entry_price * 0.01
+        # Calculate price risk (percentage)
+        price_risk_pct = abs(entry_price - stop_loss) / entry_price if stop_loss > 0 else 0.01
         
-        # Calculate position size
-        position_size = risk_amount / price_risk
+        # SAFETY: Ensure minimum price risk to prevent huge position sizes
+        # If stop loss is very tight (< 0.5%), use 0.5% minimum
+        if price_risk_pct < 0.005:
+            self.logger.debug(f"Price risk too tight ({price_risk_pct:.4%}), using 0.5% minimum")
+            price_risk_pct = 0.005
         
-        # Apply maximum position size limit
-        max_size = capital * self.max_position_size / entry_price
-        position_size = min(position_size, max_size)
+        # Calculate position value we can afford given the risk
+        # If we risk 2% of capital on a 1% price move, we can have 2% / 1% = 2x capital position
+        # But we cap this to max_position_size
+        position_value_limit = sizing_capital * min(self.max_risk_per_trade / price_risk_pct, self.max_position_size)
         
-        self.logger.debug(f"Calculated position size: {position_size:.4f} (risk: {risk_amount:.2f}, price_risk: {price_risk:.2f})")
+        # Convert to position size (number of units)
+        position_size = position_value_limit / entry_price
+        
+        # ABSOLUTE CAP: Never more than 20% of capital in a single position
+        # This prevents crazy position sizes even with very tight stops
+        absolute_max_value = sizing_capital * 0.2
+        absolute_max_size = absolute_max_value / entry_price
+        position_size = min(position_size, absolute_max_size)
+        
+        self.logger.debug(f"Position size: {position_size:.4f} (value: ${position_size * entry_price:.2f}, risk%: {price_risk_pct:.2%})")
         
         return position_size
     

@@ -1,31 +1,58 @@
 # 📚 Documentation
 
-This directory contains all project documentation organized by category.
+Complete documentation for the Hyperliquid Python Trading Bot.
 
-## 📁 Structure
+---
 
-### **Guides** (`guides/`)
-- `TRADING_COMMANDS.md` - Complete command reference for trading operations
-- `STRATEGY_SWITCHING_GUIDE.md` - Guide for switching between strategies
-- `TRADING_STRATEGIES_GUIDE.md` - Comprehensive guide to all trading strategies
+## 🚀 Getting Started
 
-### **Results** (`results/`)
-- `TIMEFRAME_OPTIMIZATION_RESULTS.md` - Results of timeframe optimization testing
-- `PROJECT_CLEANUP_SUMMARY.md` - Summary of project cleanup and reorganization
+**New users start here:**
+- **[../QUICK_START.md](../QUICK_START.md)** - Setup and first backtest
+- **[../QUICK_COMMANDS.md](../QUICK_COMMANDS.md)** - Quick command reference
 
-### **Deployment** (`deployment/`)
-- `DEPLOYMENT_GUIDE.md` - Guide for deploying the trading bot
+---
 
-## 🚀 Quick Start
+## 📖 User Guides
 
-1. **Read the main README.md** in the project root
-2. **Check Trading Commands** in `guides/TRADING_COMMANDS.md`
-3. **Review Results** in `results/` for performance data
-4. **Follow Deployment Guide** in `deployment/` for setup
+- **[user-guides/PRODUCTION_STRATEGIES.md](user-guides/PRODUCTION_STRATEGIES.md)** - Detailed strategy documentation
+- **[guides/TRADING_COMMANDS.md](guides/TRADING_COMMANDS.md)** - Trading commands
+- **[guides/TRADING_STRATEGIES_GUIDE.md](guides/TRADING_STRATEGIES_GUIDE.md)** - Strategy guide
+- **[guides/STRATEGY_SWITCHING_GUIDE.md](guides/STRATEGY_SWITCHING_GUIDE.md)** - How to switch strategies
 
-## 📖 Documentation Standards
+---
 
-- All documentation is written in Markdown
-- Files are organized by purpose and audience
-- Performance results include clear metrics and comparisons
-- Guides include practical examples and commands
+## 🔧 Development
+
+- **[development/PROJECT_STATUS.md](development/PROJECT_STATUS.md)** - Current project status
+- **[development/GITHUB_PREP.md](development/GITHUB_PREP.md)** - GitHub deployment guide
+- **[development/PROJECT_SUMMARY.md](development/PROJECT_SUMMARY.md)** - Historical summary
+- **[../CONTRIBUTING.md](../CONTRIBUTING.md)** - Contributing guidelines
+
+---
+
+## 📦 Deployment
+
+- **[deployment/DEPLOYMENT_GUIDE.md](deployment/DEPLOYMENT_GUIDE.md)** - Deployment instructions
+
+---
+
+## 📊 Results & Archives
+
+- **[archive/](archive/)** - Archived documentation from development
+- **[results/](results/)** - Test results and optimization summaries
+
+---
+
+## 🎯 Quick Links
+
+| I want to... | Go to... |
+|--------------|----------|
+| Get started quickly | [../QUICK_START.md](../QUICK_START.md) |
+| See all commands | [../QUICK_COMMANDS.md](../QUICK_COMMANDS.md) |
+| Learn about strategies | [user-guides/PRODUCTION_STRATEGIES.md](user-guides/PRODUCTION_STRATEGIES.md) |
+| Contribute code | [../CONTRIBUTING.md](../CONTRIBUTING.md) |
+| Deploy to production | [deployment/DEPLOYMENT_GUIDE.md](deployment/DEPLOYMENT_GUIDE.md) |
+
+---
+
+**Start here:** [../QUICK_START.md](../QUICK_START.md)

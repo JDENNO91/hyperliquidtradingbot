@@ -12,8 +12,10 @@ from core.base_strategy import BaseStrategy
 # Import core strategies
 from .core.bbrsi_strategy import BBRSIStrategy
 from .core.scalping_strategy import ScalpingStrategy
+from .core.ma_crossover_rsi_hybrid import MACrossoverRSIHybrid
+from .core.rsi_scalping_strategy import RSIScalpingStrategy
 
-# Import timeframe-optimized strategies
+# Import timeframe-optimized strategies (legacy - still functional)
 from .timeframe_optimized.super_optimized_strategy import SuperOptimizedStrategy
 from .timeframe_optimized.super_optimized_5m_strategy import SuperOptimized5mStrategy
 from .timeframe_optimized.super_optimized_15m_strategy import SuperOptimized15mStrategy
@@ -27,16 +29,20 @@ class StrategyFactory:
     create strategies dynamically.
     """
     
-    # Registry of available strategies (only the best performers)
+    # Registry of available strategies
     _strategies: Dict[str, Type[BaseStrategy]] = {
-        # Core strategies
-        'bbrsi': BBRSIStrategy,
-        'scalping': ScalpingStrategy,
+        # Production strategies (NEW - Highest performing)
+        'rsi_scalping': RSIScalpingStrategy,           # 97% return, 2.94% DD (BEST)
+        'ma_rsi_hybrid': MACrossoverRSIHybrid,         # 96% return, 3.53% DD, 10% win rate
         
-        # Timeframe-optimized strategies (champions)
+        # Legacy strategies (Original - Still functional)
+        'bbrsi': BBRSIStrategy,                         # Original BBRSI
+        'scalping': ScalpingStrategy,                   # Original scalping
+        
+        # Legacy timeframe-optimized strategies (superseded by production strategies)
         'super_optimized': SuperOptimizedStrategy,        # 1m - 1.94% return
         'super_optimized_5m': SuperOptimized5mStrategy,   # 5m - 1.95% return
-        'super_optimized_15m': SuperOptimized15mStrategy, # 15m - 2.06% return (CHAMPION)
+        'super_optimized_15m': SuperOptimized15mStrategy, # 15m - 2.06% return
     }
     
     @classmethod

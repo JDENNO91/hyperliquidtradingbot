@@ -26,7 +26,7 @@ class Info(API):
         perp_dexs: Optional[List[str]] = None,
         timeout: Optional[float] = None,
     ):  # pylint: disable=too-many-locals
-        super().__init__(base_url, timeout)
+        super().__init__(base_url)
         self.ws_manager: Optional[WebsocketManager] = None
         if not skip_ws:
             self.ws_manager = WebsocketManager(self.base_url)

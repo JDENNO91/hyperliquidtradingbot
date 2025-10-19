@@ -1,0 +1,46 @@
+{
+  "strategy": "rsi_scalping",
+  "data_file": "src/backtesting/data/ETH-PERP/ETH-PERP-5m-7d.json",
+  "trading": {
+      "market": "ETH-PERP",
+      "positionSize": 0.1,
+      "leverage": 5,
+      "leverageMode": "isolated",
+      "maxPositions": 1,
+      "timeframe": "5m",
+      "profitTarget": 0.8,
+      "stop_loss_pct": 0.01,
+      "take_profit_pct": 0.012,
+      "testMode": true
+  },
+  "indicators": {
+      "rsi": {
+          "period": 7,
+          "oversold": 45,
+          "overbought": 55,
+          "neutral_low": 49,
+          "neutral_high": 51,
+          "description": "EXTREME: Fast RSI, tight bands for max frequency"
+      }
+  },
+  "database": {
+      "path": "./db/backtest.db"
+  },
+  "logging": {
+      "console": {
+          "level": "info"
+      },
+      "file": {
+          "level": "debug",
+          "path": "./logs/backtest_rsi_scalping.log"
+      }
+  },
+  "backtest": {
+      "initialCapital": 10000,
+      "tradingFee": 0.001,
+      "slippage": 0.0005,
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+  }
+}
+

@@ -7,7 +7,7 @@
     "leverage": 5,
     "leverageMode": "isolated",
     "maxPositions": 3,
-    "timeframe": "5m",
+    "timeframe": "1m",
     "profitTarget": 0.025,
     "testMode": true,
     "stop_loss_pct": 0.008,
@@ -52,8 +52,8 @@
     "initialCapital": 10000,
     "tradingFee": 0.001,
     "slippage": 0.0005,
-    "startDate": "2024-01-01",
-    "endDate": "2023-12-31",
+    "startDate": "2023-01-01",
+    "endDate": "2024-12-31",
     "maxDrawdown": 0.3
   }
 }

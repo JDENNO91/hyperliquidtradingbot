@@ -50,4 +50,24 @@ def calculate_bollinger_bands(data: List[Dict[str, Any]], period: int, std_dev: 
         "upper": upper_band,
     }
 
-__all__ = ["calculate_rsi", "calculate_adx", "calculate_bollinger_bands"]
+# Import microprice functions
+from .microprice import (
+    calculate_microprice,
+    calculate_microprice_from_orderbook,
+    calculate_microprice_from_ohlcv,
+    calculate_microprice_series,
+    get_microprice_signals,
+    MicropriceData
+)
+
+__all__ = [
+    "calculate_rsi", 
+    "calculate_adx", 
+    "calculate_bollinger_bands",
+    "calculate_microprice",
+    "calculate_microprice_from_orderbook", 
+    "calculate_microprice_from_ohlcv",
+    "calculate_microprice_series",
+    "get_microprice_signals",
+    "MicropriceData"
+]

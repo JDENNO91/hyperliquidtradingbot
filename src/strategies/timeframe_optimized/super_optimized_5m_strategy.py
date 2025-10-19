@@ -11,6 +11,11 @@ from typing import Dict, Any, Optional, List
 from datetime import datetime
 
 from core.base_strategy import BaseStrategy, Signal, Position
+from ..indicators.microprice import (
+    calculate_microprice_from_ohlcv,
+    get_microprice_signals,
+    MicropriceData
+)
 
 class SuperOptimized5mStrategy(BaseStrategy):
     """
@@ -120,6 +125,10 @@ class SuperOptimized5mStrategy(BaseStrategy):
         # Market regime
         market_regime = self._detect_market_regime(volatility, volume_ratio, trend_strength)
         
+        # Calculate microprice for enhanced 5m market microstructure analysis
+        current_data = data[index-30:index+1]
+        microprice_data = calculate_microprice_from_ohlcv(current_data, -1)
+        
         return {
             'momentum_1m': momentum_1m,
             'momentum_3m': momentum_3m,
@@ -134,7 +143,8 @@ class SuperOptimized5mStrategy(BaseStrategy):
             'rsi_momentum': rsi_momentum,
             'volume_momentum': volume_momentum,
             'market_regime': market_regime,
-            'current_price': current_price
+            'current_price': current_price,
+            'microprice_data': microprice_data
         }
     
     def generate_signal(self, data: List[Dict[str, Any]], index: int) -> Signal:
@@ -183,6 +193,27 @@ class SuperOptimized5mStrategy(BaseStrategy):
             else:  # Short signal
                 ensemble_short_score += abs(prediction) * weight
         
+        # Microprice analysis for enhanced 5m ensemble decisions
+        microprice_data = indicators.get('microprice_data')
+        microprice_boost = 0.0
+        if microprice_data:
+            microprice_signals = get_microprice_signals(microprice_data, threshold=0.0006)  # Higher threshold for 5m
+            volume_imbalance = abs(microprice_data.volume_imbalance)
+            
+            # Microprice confirmation boost for 5m
+            if microprice_signals['signal'] == 'BULLISH':
+                microprice_boost = 0.12  # Moderate boost for 5m
+            elif microprice_signals['signal'] == 'BEARISH':
+                microprice_boost = -0.12  # Moderate boost for 5m
+            
+            # Volume imbalance boost for 5m
+            if volume_imbalance > 0.25:
+                microprice_boost *= 1.3  # Moderate amplification for 5m
+        
+        # Apply microprice boost to ensemble scores
+        ensemble_long_score += microprice_boost if microprice_boost > 0 else 0
+        ensemble_short_score += abs(microprice_boost) if microprice_boost < 0 else 0
+        
         # 5m optimized decision threshold
         threshold = 0.3  # Higher threshold for 5m
         
@@ -194,7 +225,11 @@ class SuperOptimized5mStrategy(BaseStrategy):
                 'ensemble_short_score': ensemble_short_score,
                 'predictions': predictions,
                 'ensemble_weights': self.ensemble_weights,
-                'indicators': indicators
+                'indicators': indicators,
+                'microprice': microprice_data.microprice if microprice_data else None,
+                'microprice_signal': microprice_signals['signal'] if microprice_data else None,
+                'volume_imbalance': microprice_data.volume_imbalance if microprice_data else None,
+                'microprice_boost': microprice_boost
             }, indicators['current_price'], self.market, data[index].get('timestamp', 0), indicators['current_price'] * 0.992)
         
         elif ensemble_short_score >= threshold and ensemble_short_score > ensemble_long_score:
@@ -204,7 +239,11 @@ class SuperOptimized5mStrategy(BaseStrategy):
                 'ensemble_short_score': ensemble_short_score,
                 'predictions': predictions,
                 'ensemble_weights': self.ensemble_weights,
-                'indicators': indicators
+                'indicators': indicators,
+                'microprice': microprice_data.microprice if microprice_data else None,
+                'microprice_signal': microprice_signals['signal'] if microprice_data else None,
+                'volume_imbalance': microprice_data.volume_imbalance if microprice_data else None,
+                'microprice_boost': microprice_boost
             }, indicators['current_price'], self.market, data[index].get('timestamp', 0), indicators['current_price'] * 1.008)
         
         return Signal('NONE', 0.0, 'No 5m opportunity', {})

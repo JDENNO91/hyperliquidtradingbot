@@ -22,6 +22,7 @@ wheels/
 MANIFEST
 
 # Virtual environments
+.venv/
 venv/
 env/
 ENV/
@@ -49,28 +50,34 @@ Thumbs.db
 logs/
 src/logs/
 
-# Data files (keep structure but ignore large data)
-src/backtesting/data/*.json
+# Data files (large files - generate locally)
+src/backtesting/data/*/*.json
 !src/backtesting/data/.gitkeep
 
 # Configuration files with sensitive data
 src/config/live_*.json
 src/config/*_secrets.json
 src/config/*_private.json
+*.env
+.env.*
+!.env.example
 
 # Results and outputs
 results/
 backtest_results/
 *.csv
-*.xlsx
+!requirements.txt
 
 # Temporary files
 tmp/
 temp/
 *.tmp
+temp_*.json
+test_*.sh
 
 # Jupyter Notebooks
 .ipynb_checkpoints
+*.ipynb
 
 # pytest
 .pytest_cache/
@@ -81,3 +88,7 @@ htmlcov/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Project specific
+optimization_results.json
+ma_optimization_results.json

@@ -26,7 +26,6 @@ from hyperliquid.utils.signing import (
     sign_convert_to_multi_sig_user_action,
     sign_l1_action,
     sign_multi_sig_action,
-    sign_send_asset_action,
     sign_spot_transfer_action,
     sign_token_delegate_action,
     sign_usd_class_transfer_action,
@@ -475,7 +474,7 @@ class Exchange(API):
             "fromSubAccount": self.vault_address if self.vault_address else "",
             "nonce": timestamp,
         }
-        signature = sign_send_asset_action(self.wallet, action, self.base_url == MAINNET_API_URL)
+        signature = sign_user_signed_action(self.wallet, action, ["SendAsset"], "SendAsset", self.base_url == MAINNET_API_URL)
         return self._post_action(
             action,
             signature,
