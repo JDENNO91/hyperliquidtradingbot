@@ -197,6 +197,7 @@ Available: 1m, 5m, 10m, 15m, 30m, 1h
 
 - **[QUICK_START.md](QUICK_START.md)** - Simple getting started guide
 - **[QUICK_COMMANDS.md](QUICK_COMMANDS.md)** - Command reference
+- **[tools/select_strategy.py](tools/select_strategy.py)** - Interactive strategy selector
 - **[docs/user-guides/PRODUCTION_STRATEGIES.md](docs/user-guides/PRODUCTION_STRATEGIES.md)** - Detailed strategy documentation
 - **[docs/](docs/)** - Additional guides and development docs
 

@@ -114,7 +114,7 @@ Simple menu to choose and run strategies interactively.
 
 - **Quick Start:** `QUICK_START.md`
 - **Detailed Guide:** `docs/user-guides/PRODUCTION_STRATEGIES.md`
-- **Interactive Selector:** `select_strategy.py`
+- **Interactive Selector:** `tools/select_strategy.py`
 - **Config Location:** `src/config/production/`
 - **Archived Configs:** `src/config/archive/` (old/test configs)
 

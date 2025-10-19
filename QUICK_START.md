@@ -12,7 +12,7 @@ source .venv/bin/activate
 
 **Option A - Interactive Selector:**
 ```bash
-python3 select_strategy.py
+python3 tools/select_strategy.py
 ```
 
 **Option B - Direct Command:**
