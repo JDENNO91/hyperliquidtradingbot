@@ -21,14 +21,14 @@ Automated trading strategies with backtesting, live simulation, and production-r
 
 ---
 
-## Best Strategies (7-Day Backtests)
+## Production Strategies
 
-| Strategy | Trades/Day | Return | Max DD | Win Rate |
-|----------|------------|--------|--------|----------|
-| **RSI Scalping Standard** | 2.3 | 97% | 2.94% | 6.2% |
-| RSI Scalping Extreme | 3.6 | 95% | 5.31% | 4.0% |
-| MA+RSI Hybrid | 1.4 | 96% | 3.53% | 10% |
-| RSI Scalping Ultra | 44 | 47% | 53% | 0.3% |
+| Strategy | Performance | Trades/Day | Max DD | Win Rate |
+|----------|-------------|------------|--------|----------|
+| **RSI Scalping Standard** | 97% | 2.3 | 2.94% | 6.2% |
+| RSI Scalping Extreme | 95% | 3.6 | 5.31% | 4.0% |
+| MA+RSI Hybrid | 96% | 1.4 | 3.53% | 10% |
+| RSI Scalping Ultra | 47% | 44 | 53% | 0.3% |
 
 *All tested on ETH-PERP*
 
@@ -60,9 +60,9 @@ python3 src/cli/backtest.py --config src/config/production/rsi_scalping/standard
 ```
 
 ### 3. Next Steps
-- 📖 Read **[QUICK_START.md](QUICK_START.md)** for detailed guide
-- 📊 Review **[PRODUCTION_STRATEGIES.md](PRODUCTION_STRATEGIES.md)** for strategy details
-- ⚡ Check **[QUICK_COMMANDS.md](QUICK_COMMANDS.md)** for one-liners
+- Read **[QUICK_START.md](QUICK_START.md)** for detailed guide
+- Review **[PRODUCTION_STRATEGIES.md](PRODUCTION_STRATEGIES.md)** for strategy details
+- Check **[QUICK_COMMANDS.md](QUICK_COMMANDS.md)** for one-liners
 
 ---
 
@@ -77,7 +77,7 @@ hyperliquidpython/
 ├── select_strategy.py             # Interactive strategy selector
 │
 ├── src/
-│   ├── config/production/         # Production-ready configs ✅
+│   ├── config/production/         # Production-ready configs
 │   │   ├── rsi_scalping/          # RSI scalping strategies
 │   │   └── ma_rsi_hybrid/         # MA+RSI hybrid strategies
 │   │
@@ -92,9 +92,9 @@ hyperliquidpython/
 
 ---
 
-## 📊 Strategies Explained
+## Strategies Explained
 
-### 🏆 RSI Scalping Standard (RECOMMENDED)
+### RSI Scalping Standard - 97% Performance
 **Best for:** Highest returns with lowest risk
 
 ```
@@ -104,7 +104,7 @@ Exit:     RSI returns to neutral (45-55) or ±1.5% profit/loss
 Results:  97% return, 2.94% max drawdown, 2.3 trades/day
 ```
 
-### ⚡ RSI Scalping Extreme
+### RSI Scalping Extreme - 95% Performance
 **Best for:** More active trading
 
 ```
@@ -114,7 +114,7 @@ Exit:     RSI neutral or ±1.2% profit/loss
 Results:  95% return, 5.31% max drawdown, 3.6 trades/day
 ```
 
-### 🎯 MA+RSI Hybrid
+### MA+RSI Hybrid - 96% Performance
 **Best for:** Conservative traders, highest win rate
 
 ```
@@ -124,7 +124,7 @@ Exit:     Opposite crossover or ±6% profit/loss
 Results:  96% return, 3.53% max drawdown, 1.4 trades/day
 ```
 
-### ⚠️ RSI Scalping Ultra (Advanced)
+### RSI Scalping Ultra - 47% Performance
 **Best for:** 10+ trades/day goal (high risk!)
 
 ```
@@ -136,7 +136,7 @@ Results:  47% return, 53% max drawdown, 44 trades/day
 
 ---
 
-## 🛠️ Usage
+## Usage
 
 ### Backtesting
 ```bash
@@ -158,7 +158,7 @@ python3 src/cli/trade.py --profile live_eth --dry-run
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 All production configs are in `src/config/production/` with embedded descriptions:
 
@@ -168,7 +168,7 @@ All production configs are in `src/config/production/` with embedded description
   "_performance": {
     "trades_per_day": 2.3,
     "return_7d": "97.06%",
-    "verdict": "🏆 BEST"
+    "verdict": "BEST PERFORMER"
   },
   "_how_it_works": "Entry/exit logic...",
   
@@ -215,7 +215,7 @@ pytest tests/test_strategies.py
 
 ---
 
-## ⚠️ Risk Warning
+## Risk Warning
 
 **Cryptocurrency trading involves substantial risk of loss.**
 
@@ -229,7 +229,7 @@ pytest tests/test_strategies.py
 
 ---
 
-## 📈 Performance Notes
+## Performance Notes
 
 - All backtest results are based on 7 days of synthetic data
 - Real-world performance may vary
@@ -239,7 +239,7 @@ pytest tests/test_strategies.py
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions welcome! Please:
 1. Fork the repository
@@ -271,7 +271,7 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ---
 
-## 🎯 Recommended Workflow
+## Recommended Workflow
 
 1. **Backtest** - Test strategy on historical data
 2. **Simulate** - Paper trade with real market data
