@@ -47,21 +47,21 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # Install dependencies
-pip install -r requirements.txt
+pip install -r project-files/requirements.txt
 ```
 
 ### 2. Run Your First Backtest
 ```bash
 # Interactive selector (easiest)
-python3 select_strategy.py
+python3 tools/select_strategy.py
 
-# Or run directly (recommended strategy)
+# Or run directly
 python3 src/cli/backtest.py --config src/config/production/rsi_scalping/standard_5m.json
 ```
 
 ### 3. Next Steps
 - Read **[QUICK_START.md](QUICK_START.md)** for detailed guide
-- Review **[PRODUCTION_STRATEGIES.md](PRODUCTION_STRATEGIES.md)** for strategy details
+- Review **[docs/user-guides/PRODUCTION_STRATEGIES.md](docs/user-guides/PRODUCTION_STRATEGIES.md)** for strategy details
 - Check **[QUICK_COMMANDS.md](QUICK_COMMANDS.md)** for one-liners
 
 ---
@@ -71,22 +71,26 @@ python3 src/cli/backtest.py --config src/config/production/rsi_scalping/standard
 ```
 hyperliquidpython/
 ├── README.md                      # This file
-├── QUICK_START.md                 # Getting started guide
-├── PRODUCTION_STRATEGIES.md       # Strategy documentation
-├── QUICK_COMMANDS.md              # Command reference
-├── select_strategy.py             # Interactive strategy selector
+├── QUICK_START.md                 # Getting started
+├── QUICK_COMMANDS.md              # Commands
+├── CONTRIBUTING.md                # Guidelines
+│
+├── tools/
+│   └── select_strategy.py         # Interactive selector
 │
 ├── src/
-│   ├── config/production/         # Production-ready configs
-│   │   ├── rsi_scalping/          # RSI scalping strategies
-│   │   └── ma_rsi_hybrid/         # MA+RSI hybrid strategies
-│   │
-│   ├── strategies/core/           # Strategy implementations
+│   ├── config/
+│   │   ├── production/            # Production configs (4 strategies)
+│   │   ├── archive/               # Old configs
+│   │   └── core/                  # Legacy configs
+│   ├── strategies/
+│   │   ├── core/                  # Strategy implementations
+│   │   └── timeframe_optimized/   # Timeframe variants
 │   ├── backtesting/               # Backtesting engine
-│   ├── cli/                       # Command-line interface
-│   └── core/                      # Core trading engine
+│   ├── cli/                       # CLI tools
+│   └── core/                      # Core engine
 │
-├── docs/                          # Additional documentation
+├── docs/                          # Documentation
 └── tests/                         # Unit tests
 ```
 
@@ -279,9 +283,9 @@ MIT License - see [LICENSE](LICENSE) file for details
 4. **Scale Up** - Gradually increase as you gain confidence
 5. **Monitor** - Track performance and adjust
 
-**Start here:** 
+Start here:
 ```bash
-python3 select_strategy.py
+python3 tools/select_strategy.py
 ```
 
 Start with RSI Scalping Standard 5m for optimal risk/reward balance.
