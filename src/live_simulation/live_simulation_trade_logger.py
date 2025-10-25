@@ -22,7 +22,9 @@ def get_livesim_logger(log_path):
 
 logger = logging.getLogger("LiveSimLogger")
 
-LOG_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "logs", "live_simulation_debug.log"))
+LOG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "logs"))
+os.makedirs(LOG_DIR, exist_ok=True)
+LOG_PATH = os.path.join(LOG_DIR, "live_simulation_debug.log")
 
 # Prevent duplicate handlers
 if logger.hasHandlers():
@@ -40,8 +42,8 @@ console_handler.setLevel(logging.WARNING)  # Only show warnings/errors in termin
 console_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
 logger.addHandler(console_handler)
 
-TRADE_LOG_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "logs", "live_simulation_trades.json"))
-CSV_LOG_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "logs", "live_simulation_trades.csv"))
+TRADE_LOG_PATH = os.path.join(LOG_DIR, "live_simulation_trades.json")
+CSV_LOG_PATH = os.path.join(LOG_DIR, "live_simulation_trades.csv")
 
 # Only clear the log file at startup, not on every import
 if os.environ.get("LIVESIM_CLEAR_LOGS", "1") == "1":

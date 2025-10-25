@@ -67,7 +67,7 @@ class TestCLICommands:
         """Test backtest CLI help command"""
         result = subprocess.run([
             sys.executable, "-m", "cli.backtest", "--help"
-        ], capture_output=True, text=True, cwd="/Users/jdennis/Documents/GitHub/hyperliquidpython/src")
+        ], capture_output=True, text=True, cwd="src")
         
         assert result.returncode == 0
         assert "backtest" in result.stdout.lower()
@@ -77,7 +77,7 @@ class TestCLICommands:
         """Test simulate CLI help command"""
         result = subprocess.run([
             sys.executable, "-m", "cli.simulate", "--help"
-        ], capture_output=True, text=True, cwd="/Users/jdennis/Documents/GitHub/hyperliquidpython/src")
+        ], capture_output=True, text=True, cwd="src")
         
         assert result.returncode == 0
         assert "simulate" in result.stdout.lower()
@@ -87,7 +87,7 @@ class TestCLICommands:
         """Test trade CLI help command"""
         result = subprocess.run([
             sys.executable, "-m", "cli.trade", "--help"
-        ], capture_output=True, text=True, cwd="/Users/jdennis/Documents/GitHub/hyperliquidpython/src")
+        ], capture_output=True, text=True, cwd="src")
         
         assert result.returncode == 0
         assert "trade" in result.stdout.lower()
@@ -97,7 +97,7 @@ class TestCLICommands:
         """Test optimize CLI help command"""
         result = subprocess.run([
             sys.executable, "-m", "cli.optimize", "--help"
-        ], capture_output=True, text=True, cwd="/Users/jdennis/Documents/GitHub/hyperliquidpython/src")
+        ], capture_output=True, text=True, cwd="src")
         
         assert result.returncode == 0
         assert "optimize" in result.stdout.lower()

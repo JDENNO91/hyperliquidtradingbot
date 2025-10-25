@@ -153,20 +153,20 @@ class TestPerformance:
     def test_cpu_usage(self):
         """Test CPU usage is reasonable"""
         process = psutil.Process(os.getpid())
-        
-        # Get initial CPU usage
-        initial_cpu = process.cpu_percent()
-        
+
+        # Prime psutil measurement and avoid stale baseline
+        process.cpu_percent(interval=0.1)
+
         # Run intensive operations
         strategy = RSIScalpingStrategy(self.config)
         for i in range(100):
             if i >= 20:
-                indicators = strategy.compute_indicators(self.test_data, i)
-                signal = strategy.generate_signal(self.test_data, i)
-        
-        # Get final CPU usage
-        final_cpu = process.cpu_percent()
-        
+                _ = strategy.compute_indicators(self.test_data, i)
+                _ = strategy.generate_signal(self.test_data, i)
+
+        # Sample over a short interval for stability
+        final_cpu = process.cpu_percent(interval=0.2)
+
         # CPU usage should be reasonable (less than 200%)
         assert final_cpu < 200
         print(f"CPU usage: {final_cpu:.1f}%")
