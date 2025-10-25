@@ -47,7 +47,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # Install dependencies
-pip install -r project-files/requirements.txt
+pip install -r requirements.txt
 ```
 
 ### 2. Run Your First Backtest
@@ -74,9 +74,15 @@ hyperliquidpython/
 ├── QUICK_START.md                 # Getting started
 ├── QUICK_COMMANDS.md              # Commands
 ├── CONTRIBUTING.md                # Guidelines
+├── requirements.txt               # Dependencies
+├── setup.py                       # Package setup
 │
 ├── tools/
 │   └── select_strategy.py         # Interactive selector
+│
+├── config/
+│   ├── env.example                # Environment template
+│   └── pytest.ini                # Test configuration
 │
 ├── src/
 │   ├── config/
