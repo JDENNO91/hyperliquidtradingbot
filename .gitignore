@@ -61,6 +61,10 @@ src/config/*_private.json
 *.env
 .env.*
 !.env.example
+src/application/.env
+**/.env
+**/env.local
+**/env.production
 
 # Results and outputs
 results/
