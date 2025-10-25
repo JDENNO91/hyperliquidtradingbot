@@ -249,13 +249,13 @@ Contributions welcome! Please:
 
 ---
 
-## 📄 License
+## License
 
 MIT License - see [LICENSE](LICENSE) file for details
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Hyperliquid SDK for API integration
 - Trading strategy research from professional quant traders
@@ -263,7 +263,7 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ---
 
-## 📞 Support
+## Support
 
 - **Issues:** Create a GitHub issue
 - **Documentation:** See `docs/` folder
@@ -284,8 +284,8 @@ MIT License - see [LICENSE](LICENSE) file for details
 python3 select_strategy.py
 ```
 
-Choose strategy 1 (RSI Scalping Standard 5m) - it has the best risk/reward!
+Start with RSI Scalping Standard 5m for optimal risk/reward balance.
 
 ---
 
-**Built with ❤️ for profitable crypto trading**
+Built for profitable cryptocurrency trading
