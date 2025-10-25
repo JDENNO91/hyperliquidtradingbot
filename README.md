@@ -23,14 +23,15 @@ Automated trading strategies with backtesting, live simulation, and production-r
 
 ## Production Strategies
 
-| Strategy | Performance | Trades/Day | Max DD | Win Rate |
-|----------|-------------|------------|--------|----------|
-| **RSI Scalping Standard** | 97% | 2.3 | 2.94% | 6.2% |
-| RSI Scalping Extreme | 95% | 3.6 | 5.31% | 4.0% |
-| MA+RSI Hybrid | 96% | 1.4 | 3.53% | 10% |
-| RSI Scalping Ultra | 47% | 44 | 53% | 0.3% |
+| Strategy | Asset | Performance | Trades/Day | Max DD | Win Rate |
+|----------|-------|-------------|------------|--------|----------|
+| **RSI Scalping Standard** | ETH-PERP | 97% | 2.3 | 2.94% | 6.2% |
+| RSI Scalping Extreme | ETH-PERP | 95% | 3.6 | 5.31% | 4.0% |
+| MA+RSI Hybrid | ETH-PERP | 96% | 1.4 | 3.53% | 10% |
+| RSI Scalping Ultra | ETH-PERP | 47% | 44 | 53% | 0.3% |
 
-*All tested on ETH-PERP*
+**Currently Testing:** ETH-PERP, BTC-PERP  
+**Full Results:** See [Production Strategy Details](docs/user-guides/PRODUCTION_STRATEGIES.md)
 
 ---
 
@@ -105,7 +106,8 @@ hyperliquidpython/
 ## Strategies Explained
 
 ### RSI Scalping Standard - 97% Performance
-**Best for:** Highest returns with lowest risk
+**Best for:** Highest returns with lowest risk  
+**Tested on:** ETH-PERP
 
 ```
 Strategy: Mean reversion scalping
@@ -115,7 +117,8 @@ Results:  97% return, 2.94% max drawdown, 2.3 trades/day
 ```
 
 ### RSI Scalping Extreme - 95% Performance
-**Best for:** More active trading
+**Best for:** More active trading  
+**Tested on:** ETH-PERP
 
 ```
 Strategy: Aggressive mean reversion
@@ -125,7 +128,8 @@ Results:  95% return, 5.31% max drawdown, 3.6 trades/day
 ```
 
 ### MA+RSI Hybrid - 96% Performance
-**Best for:** Conservative traders, highest win rate
+**Best for:** Conservative traders, highest win rate  
+**Tested on:** ETH-PERP
 
 ```
 Strategy: Confluence trading (trend + momentum)
@@ -135,7 +139,8 @@ Results:  96% return, 3.53% max drawdown, 1.4 trades/day
 ```
 
 ### RSI Scalping Ultra - 47% Performance
-**Best for:** 10+ trades/day goal (high risk!)
+**Best for:** 10+ trades/day goal (high risk!)  
+**Tested on:** ETH-PERP
 
 ```
 Strategy: High-frequency scalping
@@ -242,10 +247,12 @@ pytest tests/test_strategies.py
 ## Performance Notes
 
 - All backtest results are based on 7 days of synthetic data
-- Real-world performance may vary
+- Currently tested on **ETH-PERP** - additional testing on **BTC-PERP** in progress
+- Real-world performance may vary across different assets
 - Expected monthly returns: 50-200% (depending on strategy and market conditions)
 - Low win rates (4-10%) are normal for profitable trend-following strategies
 - One big winner can cover many small losers (proper risk management)
+- See [Production Strategy Details](docs/user-guides/PRODUCTION_STRATEGIES.md) for asset-specific results
 
 ---
 
