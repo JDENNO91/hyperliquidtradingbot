@@ -23,12 +23,12 @@ Automated trading strategies with backtesting, live simulation, and production-r
 
 ## Production Strategies
 
-| Strategy | Asset | Performance | Trades/Day | Max DD | Win Rate |
-|----------|-------|-------------|------------|--------|----------|
-| **RSI Scalping Standard** | ETH-PERP | 97% | 2.3 | 2.94% | 6.2% |
-| RSI Scalping Extreme | ETH-PERP | 95% | 3.6 | 5.31% | 4.0% |
-| MA+RSI Hybrid | ETH-PERP | 96% | 1.4 | 3.53% | 10% |
-| RSI Scalping Ultra | ETH-PERP | 47% | 44 | 53% | 0.3% |
+| Strategy                 | Asset    | Performance | Trades/Day | Max DD | Win Rate |
+|--------------------------|----------|-------------|------------|--------|----------|
+| **RSI Scalping Standard** | ETH-PERP | 97%         | 2.3        | 2.94%  | 6.2%     |
+| RSI Scalping Extreme     | ETH-PERP | 95%         | 3.6        | 5.31%  | 4.0%     |
+| MA+RSI Hybrid            | ETH-PERP | 96%         | 1.4        | 3.53%  | 10%      |
+| RSI Scalping Ultra       | ETH-PERP | 47%         | 44         | 53%    | 0.3%     |
 
 **Currently Testing:** ETH-PERP, BTC-PERP  
 **Full Results:** See [Production Strategy Details](docs/user-guides/PRODUCTION_STRATEGIES.md)
@@ -56,8 +56,11 @@ pip install -r requirements.txt
 # Interactive selector (easiest)
 python3 tools/select_strategy.py
 
-# Or run directly
+# Or run directly (ETH-PERP)
 python3 src/cli/backtest.py --config src/config/production/rsi_scalping/standard_5m.json
+
+# Or run on BTC-PERP (if BTC config exists)
+python3 src/cli/backtest.py --config src/config/production/rsi_scalping/standard_5m_btc.json
 ```
 
 ### 3. Next Steps
@@ -155,20 +158,31 @@ Results:  47% return, 53% max drawdown, 44 trades/day
 
 ### Backtesting
 ```bash
-# Test strategy on historical data
+# Test strategy on ETH-PERP
 python3 src/cli/backtest.py --config src/config/production/rsi_scalping/standard_5m.json
+
+# Test strategy on BTC-PERP
+python3 src/cli/backtest.py --config src/config/backtest_btc.json
 ```
 
 ### Live Simulation
 ```bash
 # Paper trade with real market data (no real money)
+# ETH
 python3 src/cli/simulate.py --profile live_eth --duration 24
+
+# BTC
+python3 src/cli/simulate.py --profile live_btc --duration 24
 ```
 
 ### Live Trading
 ```bash
 # Real trading (start in dry-run mode!)
+# ETH
 python3 src/cli/trade.py --profile live_eth --dry-run
+
+# BTC
+python3 src/cli/trade.py --profile live_btc --dry-run
 ```
 
 ---
@@ -193,18 +207,31 @@ All production configs are in `src/config/production/` with embedded description
 }
 ```
 
-### Switch Timeframes
+### Switch Timeframes and Assets
 Edit `data_file` and `timeframe` in config:
 ```json
 {
   "data_file": "src/backtesting/data/ETH-PERP/ETH-PERP-5m-7d.json",
   "trading": {
-    "timeframe": "5m"
+    "timeframe": "5m",
+    "market": "ETH-PERP"
   }
 }
 ```
 
-Available: 1m, 5m, 10m, 15m, 30m, 1h
+For BTC, change to:
+```json
+{
+  "data_file": "src/backtesting/data/BTC-PERP/BTC-PERP-5m-7d.json",
+  "trading": {
+    "timeframe": "5m",
+    "market": "BTC-PERP"
+  }
+}
+```
+
+Available timeframes: 1m, 5m, 10m, 15m, 30m, 1h  
+Available assets: ETH-PERP, BTC-PERP
 
 ---
 
