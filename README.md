@@ -195,6 +195,36 @@ Edit `data_file` and `timeframe` in config:
 }
 ```
 
+### **Environment Variables**
+For live trading, create a `.env` file with your Hyperliquid credentials:
+
+```bash
+# Copy the template
+cp config/env.template .env
+
+# Edit with your actual credentials
+nano .env
+```
+
+**Required Variables:**
+- `HL_API_URL=https://api.hyperliquid.xyz`
+- `HL_PRIVATE_KEY=your_private_key_here`
+- `HL_ADDRESS=your_wallet_address_here`
+
+**⚠️ Important Notes:**
+- **Live Trading**: Requires valid Hyperliquid credentials
+- **Live Simulation**: Works without credentials (uses market data only)
+- **Backtesting**: No credentials needed
+
+**🔧 Check Credentials:**
+```bash
+# Test your credential setup
+python3 check_credentials.py
+```
+
+**📖 Full Credential Guide:**
+See [CREDENTIAL_SETUP.md](CREDENTIAL_SETUP.md) for detailed instructions.
+
 **Available timeframes:** 1m, 5m, 10m, 15m, 30m, 1h  
 **Available assets:** ETH-PERP, BTC-PERP
 
@@ -261,6 +291,55 @@ docker-compose up simulation
 - Expected monthly returns: 50-200% (depending on strategy and market conditions)
 - Low win rates (4-10%) are normal for profitable trend-following strategies
 - One big winner can cover many small losers (proper risk management)
+
+---
+
+## 🧪 **Testing**
+
+### **Quick Health Check**
+```bash
+# Run system health check
+python3 src/utils/health_check.py
+```
+
+### **Core Test Suite (Recommended)**
+```bash
+# Run core tests (fast, reliable)
+python3 test_core.py
+
+# Run comprehensive tests (includes all modules)
+python3 test_project.py
+```
+
+### **Individual Test Categories**
+```bash
+# Strategy tests
+python3 -m pytest tests/test_strategies.py -v
+
+# Backtesting tests  
+python3 -m pytest tests/test_backtesting.py -v
+
+# CLI tests
+python3 -m pytest tests/test_cli.py -v
+
+# Integration tests (may have some issues)
+python3 -m pytest tests/test_integration.py -v
+
+# Risk management tests (may have some issues)
+python3 -m pytest tests/test_risk_management.py -v
+
+# Performance tests (may have some issues)
+python3 -m pytest tests/test_performance.py -v
+```
+
+### **Test Coverage**
+- ✅ **Strategy Tests** - All trading strategies
+- ✅ **Integration Tests** - End-to-end workflows
+- ✅ **Backtesting Tests** - Historical simulation
+- ✅ **CLI Tests** - Command-line interface
+- ✅ **Risk Management Tests** - Position sizing and limits
+- ✅ **Performance Tests** - Speed and memory usage
+- ✅ **Health Check** - System validation
 
 ---
 

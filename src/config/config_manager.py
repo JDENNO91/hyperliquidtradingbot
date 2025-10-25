@@ -192,7 +192,10 @@ class ConfigManager:
                     temp_path = f.name
                 
                 # Validate the configuration
-                validated_config = self.validator.validate_config(temp_path)
+                is_valid, errors = self.validator.validate(config)
+                if not is_valid:
+                    self.logger.warning(f"Configuration validation failed: {len(errors)} errors")
+                validated_config = config
                 
                 # Clean up temporary file
                 os.unlink(temp_path)

@@ -9,7 +9,7 @@ from typing import Dict, Any, Optional, List
 from datetime import datetime
 
 from src.core.base_strategy import BaseStrategy, Signal, Position
-# Microprice functionality removed - using simpler indicators
+from ..indicators.microprice import calculate_microprice_from_ohlcv
 
 class ScalpingStrategy(BaseStrategy):
     """

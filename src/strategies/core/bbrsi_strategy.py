@@ -14,7 +14,7 @@ from src.core.base_strategy import BaseStrategy, Signal, Position
 from ..indicators.rsi import calculate_rsi
 from ..indicators.bollinger_bands import calculate_bollinger_bands
 from ..indicators.adx import calculate_adx
-# Microprice functionality removed - using simpler indicators
+from ..indicators.microprice import calculate_microprice_from_ohlcv
 
 class BBRSIStrategy(BaseStrategy):
     """
@@ -148,7 +148,7 @@ class BBRSIStrategy(BaseStrategy):
         # Debug logging
         self.logger.debug(f"Index {index}: Indicators computed - RSI: {rsi:.2f}, BB: {bb}, ADX: {adx_data['adx']:.2f}, Volatility: {volatility:.4f}")
         if microprice_data:
-            self.logger.debug(f"Index {index}: Microprice: {microprice_data.microprice:.4f}, Volume Imbalance: {microprice_data.volume_imbalance:.3f}")
+            self.logger.debug(f"Index {index}: Microprice: {microprice_data.microprice:.4f}, Spread: {microprice_data.spread:.3f}")
         
         return {
             'rsi': rsi,

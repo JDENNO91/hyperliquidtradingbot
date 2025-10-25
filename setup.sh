@@ -153,11 +153,46 @@ create_env_file() {
     print_status "Creating environment configuration..."
     
     if [ ! -f ".env" ]; then
-        cp config/env.example .env
-        print_success "Environment file created from template"
-        print_warning "Please edit .env file with your configuration"
+        if [ -f "config/env.template" ]; then
+            cp config/env.template .env
+            print_success "Environment file created from template"
+        elif [ -f "config/env.example" ]; then
+            cp config/env.example .env
+            print_success "Environment file created from example"
+        else
+            # Create basic .env file
+            cat > .env << EOF
+# Hyperliquid Trading Bot - Environment Variables
+# Fill in your actual credentials below
+
+HL_API_URL=https://api.hyperliquid.xyz
+HL_PRIVATE_KEY=your_private_key_here
+HL_ADDRESS=your_wallet_address_here
+EOF
+            print_success "Basic environment file created"
+        fi
+        print_warning "Please edit .env file with your Hyperliquid credentials"
+        print_info "Required for live trading: HL_API_URL, HL_PRIVATE_KEY, HL_ADDRESS"
+        print_info "Live simulation works without credentials"
     else
         print_warning ".env file already exists, skipping..."
+    fi
+}
+
+# Check credentials
+check_credentials() {
+    print_status "Checking Hyperliquid credentials..."
+    
+    if [ -f "check_credentials.py" ]; then
+        python3 check_credentials.py
+        if [ $? -eq 0 ]; then
+            print_success "Credential check completed"
+        else
+            print_warning "Credential check failed - this is normal if you haven't set up credentials yet"
+            print_info "You can still use backtesting and live simulation without credentials"
+        fi
+    else
+        print_warning "Credential checker not found, skipping..."
     fi
 }
 
@@ -173,6 +208,7 @@ main() {
     install_dependencies
     create_directories
     create_env_file
+    check_credentials
     generate_sample_data
     run_health_check
     run_tests
