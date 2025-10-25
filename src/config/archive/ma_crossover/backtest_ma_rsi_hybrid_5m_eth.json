@@ -1,0 +1,52 @@
+{
+  "strategy": "ma_rsi_hybrid",
+  "data_file": "src/backtesting/data/ETH-PERP/ETH-PERP-5m-7d.json",
+  "trading": {
+      "market": "ETH-PERP",
+      "positionSize": 0.1,
+      "leverage": 3,
+      "leverageMode": "isolated",
+      "maxPositions": 1,
+      "timeframe": "5m",
+      "profitTarget": 2.0,
+      "stop_loss_pct": 0.03,
+      "take_profit_pct": 0.06,
+      "testMode": true
+  },
+  "indicators": {
+      "sma": {
+          "period": 25,
+          "description": "Trend direction (optimized for 5m)"
+      },
+      "ema": {
+          "period": 10,
+          "description": "Fast trend (optimized for 5m)"
+      },
+      "rsi": {
+          "period": 14,
+          "long_threshold": 50,
+          "short_threshold": 50,
+          "description": "Momentum confirmation"
+      }
+  },
+  "database": {
+      "path": "./db/backtest.db"
+  },
+  "logging": {
+      "console": {
+          "level": "info"
+      },
+      "file": {
+          "level": "debug",
+          "path": "./logs/backtest_ma_rsi_hybrid.log"
+      }
+  },
+  "backtest": {
+      "initialCapital": 10000,
+      "tradingFee": 0.001,
+      "slippage": 0.0005,
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+  }
+}
+

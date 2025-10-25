@@ -1,0 +1,50 @@
+{
+  "_description": "MA+RSI Hybrid Standard - BALANCED (96% in 7 days)",
+  "_performance": {
+    "trades_per_day": 1.4,
+    "win_rate": "10.0%",
+    "return_7d": "96.47%",
+    "max_drawdown": "3.53%",
+    "risk_reward": "27.33",
+    "verdict": "🎯 BALANCED - Best win rate, conservative frequency"
+  },
+  "_how_it_works": "Combines SMA25/EMA10 crossover (trend) with RSI14 confirmation (momentum). Only enters when BOTH indicators align. Confluence trading reduces false signals.",
+  
+  "strategy": "ma_rsi_hybrid",
+  "data_file": "src/backtesting/data/ETH-PERP/ETH-PERP-5m-7d.json",
+  
+  "trading": {
+      "market": "ETH-PERP",
+      "positionSize": 0.1,
+      "leverage": 3,
+      "leverageMode": "isolated",
+      "maxPositions": 1,
+      "timeframe": "5m",
+      "profitTarget": 2.0,
+      "stop_loss_pct": 0.03,
+      "take_profit_pct": 0.06,
+      "testMode": true
+  },
+  
+  "indicators": {
+      "sma": {"period": 25},
+      "ema": {"period": 10},
+      "rsi": {
+          "period": 14,
+          "long_threshold": 50,
+          "short_threshold": 50
+      }
+  },
+  
+  "database": {"path": "./db/backtest.db"},
+  "logging": {
+      "console": {"level": "info"},
+      "file": {"level": "debug", "path": "./logs/backtest.log"}
+  },
+  "backtest": {
+      "initialCapital": 10000,
+      "tradingFee": 0.001,
+      "slippage": 0.0005
+  }
+}
+

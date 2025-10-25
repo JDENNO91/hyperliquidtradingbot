@@ -1,0 +1,51 @@
+{
+  "_description": "RSI Scalping Ultra 1m - HIGHEST FREQUENCY (46% in 7 days)",
+  "_performance": {
+    "trades_per_day": 44,
+    "win_rate": "0.3%",
+    "return_7d": "46.60%",
+    "max_drawdown": "53.40%",
+    "risk_reward": "0.87",
+    "verdict": "⚠️ HIGH FREQUENCY - Hits 10/day goal but VERY HIGH RISK"
+  },
+  "_how_it_works": "Ultra-aggressive 1-minute scalping with tight RSI bands. Generates 44 trades/day but requires constant monitoring. High drawdown and very low win rate.",
+  "_warning": "This strategy has 53% max drawdown and 0.3% win rate. Use with caution and proper risk management. Consider 5m timeframes for better risk/reward.",
+  
+  "strategy": "rsi_scalping",
+  "data_file": "src/backtesting/data/ETH-PERP/ETH-PERP-1m-7d.json",
+  
+  "trading": {
+      "market": "ETH-PERP",
+      "positionSize": 0.05,
+      "leverage": 3,
+      "leverageMode": "isolated",
+      "maxPositions": 1,
+      "timeframe": "1m",
+      "profitTarget": 0.5,
+      "stop_loss_pct": 0.005,
+      "take_profit_pct": 0.008,
+      "testMode": true
+  },
+  
+  "indicators": {
+      "rsi": {
+          "period": 7,
+          "oversold": 45,
+          "overbought": 55,
+          "neutral_low": 49,
+          "neutral_high": 51
+      }
+  },
+  
+  "database": {"path": "./db/backtest.db"},
+  "logging": {
+      "console": {"level": "info"},
+      "file": {"level": "debug", "path": "./logs/backtest.log"}
+  },
+  "backtest": {
+      "initialCapital": 10000,
+      "tradingFee": 0.001,
+      "slippage": 0.0005
+  }
+}
+

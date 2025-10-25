@@ -1,0 +1,47 @@
+{
+  "strategy": "ma_crossover",
+  "data_file": "src/backtesting/data/ETH-PERP/ETH-PERP-1h.json",
+  "trading": {
+      "market": "ETH-PERP",
+      "positionSize": 0.1,
+      "leverage": 3,
+      "leverageMode": "isolated",
+      "maxPositions": 1,
+      "timeframe": "1h",
+      "profitTarget": 3.0,
+      "stop_loss_pct": 0.03,
+      "take_profit_pct": 0.06,
+      "testMode": true
+  },
+  "indicators": {
+      "sma": {
+          "period": 30,
+          "description": "Medium-term trend (balanced approach)"
+      },
+      "ema": {
+          "period": 12,
+          "description": "Short-term trend (balanced approach)"
+      },
+      "crossover_threshold": 0.0001
+  },
+  "database": {
+      "path": "./db/backtest.db"
+  },
+  "logging": {
+      "console": {
+          "level": "info"
+      },
+      "file": {
+          "level": "debug",
+          "path": "./logs/backtest_ma_crossover.log"
+      }
+  },
+  "backtest": {
+      "initialCapital": 10000,
+      "tradingFee": 0.001,
+      "slippage": 0.0005,
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+  }
+}
+

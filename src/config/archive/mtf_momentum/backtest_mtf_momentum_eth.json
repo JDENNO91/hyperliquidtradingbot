@@ -1,0 +1,44 @@
+{
+  "strategy": "multi_timeframe_momentum",
+  "data_file": "src/backtesting/data/ETH-PERP/ETH-PERP-1h.json",
+  "trading": {
+      "market": "ETH-PERP",
+      "positionSize": 0.1,
+      "leverage": 3,
+      "leverageMode": "isolated",
+      "maxPositions": 1,
+      "timeframe": "1h",
+      "profitTarget": 3.0,
+      "stop_loss_pct": 0.03,
+      "take_profit_pct": 0.06,
+      "testMode": true
+  },
+  "indicators": {
+      "short_period": 10,
+      "medium_period": 25,
+      "long_period": 50,
+      "momentum_threshold": 0.002,
+      "alignment_required": true,
+      "description": "Multi-timeframe momentum alignment strategy"
+  },
+  "database": {
+      "path": "./db/backtest.db"
+  },
+  "logging": {
+      "console": {
+          "level": "info"
+      },
+      "file": {
+          "level": "debug",
+          "path": "./logs/backtest_mtf_momentum.log"
+      }
+  },
+  "backtest": {
+      "initialCapital": 10000,
+      "tradingFee": 0.001,
+      "slippage": 0.0005,
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+  }
+}
+

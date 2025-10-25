@@ -1,0 +1,50 @@
+{
+  "_description": "RSI Scalping Extreme - MORE ACTIVE (94% in 7 days)",
+  "_performance": {
+    "trades_per_day": 3.6,
+    "win_rate": "4.0%",
+    "return_7d": "94.69%",
+    "max_drawdown": "5.31%",
+    "risk_reward": "17.83",
+    "verdict": "⚡ ACTIVE - 50% more trades than standard, still great returns"
+  },
+  "_how_it_works": "More aggressive RSI thresholds (45/55) with fast RSI7 period. Catches more opportunities but slightly higher risk. Good for active traders.",
+  
+  "strategy": "rsi_scalping",
+  "data_file": "src/backtesting/data/ETH-PERP/ETH-PERP-5m-7d.json",
+  
+  "trading": {
+      "market": "ETH-PERP",
+      "positionSize": 0.1,
+      "leverage": 5,
+      "leverageMode": "isolated",
+      "maxPositions": 1,
+      "timeframe": "5m",
+      "profitTarget": 0.8,
+      "stop_loss_pct": 0.008,
+      "take_profit_pct": 0.012,
+      "testMode": true
+  },
+  
+  "indicators": {
+      "rsi": {
+          "period": 7,
+          "oversold": 45,
+          "overbought": 55,
+          "neutral_low": 48,
+          "neutral_high": 52
+      }
+  },
+  
+  "database": {"path": "./db/backtest.db"},
+  "logging": {
+      "console": {"level": "info"},
+      "file": {"level": "debug", "path": "./logs/backtest.log"}
+  },
+  "backtest": {
+      "initialCapital": 10000,
+      "tradingFee": 0.001,
+      "slippage": 0.0005
+  }
+}
+

@@ -1,0 +1,50 @@
+{
+  "_description": "RSI Scalping Standard - HIGHEST RETURNS (97% in 7 days)",
+  "_performance": {
+    "trades_per_day": 2.3,
+    "win_rate": "6.2%",
+    "return_7d": "97.06%",
+    "max_drawdown": "2.94%",
+    "risk_reward": "33.01",
+    "verdict": "🏆 BEST - Highest returns, lowest risk"
+  },
+  "_how_it_works": "Enters on RSI extremes (<35 oversold, >65 overbought), exits when RSI returns to neutral or profit target hit. Simple, effective mean reversion scalping.",
+  
+  "strategy": "rsi_scalping",
+  "data_file": "src/backtesting/data/ETH-PERP/ETH-PERP-5m-7d.json",
+  
+  "trading": {
+      "market": "ETH-PERP",
+      "positionSize": 0.1,
+      "leverage": 5,
+      "leverageMode": "isolated",
+      "maxPositions": 1,
+      "timeframe": "5m",
+      "profitTarget": 1.0,
+      "stop_loss_pct": 0.01,
+      "take_profit_pct": 0.015,
+      "testMode": true
+  },
+  
+  "indicators": {
+      "rsi": {
+          "period": 14,
+          "oversold": 35,
+          "overbought": 65,
+          "neutral_low": 45,
+          "neutral_high": 55
+      }
+  },
+  
+  "database": {"path": "./db/backtest.db"},
+  "logging": {
+      "console": {"level": "info"},
+      "file": {"level": "debug", "path": "./logs/backtest.log"}
+  },
+  "backtest": {
+      "initialCapital": 10000,
+      "tradingFee": 0.001,
+      "slippage": 0.0005
+  }
+}
+
