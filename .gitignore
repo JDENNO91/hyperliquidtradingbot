@@ -92,3 +92,4 @@ dmypy.json
 # Project specific
 optimization_results.json
 ma_optimization_results.json
+src/application/.env
