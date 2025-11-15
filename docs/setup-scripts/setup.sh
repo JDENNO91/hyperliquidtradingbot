@@ -1,35 +1,239 @@
 #!/bin/bash
 
-# Hyperliquid Python Trading System Setup Script
-# This script sets up the environment and installs all dependencies
+# 🚀 Hyperliquid Python Trading Bot Setup Script
+# This script sets up the trading bot environment
 
-echo "🚀 Setting up Hyperliquid Python Trading System..."
+set -e  # Exit on any error
 
-# Check if virtual environment exists
-if [ ! -d ".venv" ]; then
-    echo "📦 Creating virtual environment..."
+echo "🚀 Setting up Hyperliquid Python Trading Bot..."
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Function to print colored output
+print_status() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Check if Python 3.9+ is installed
+check_python() {
+    print_status "Checking Python installation..."
+    
+    if command -v python3 &> /dev/null; then
+        PYTHON_VERSION=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+        print_success "Python $PYTHON_VERSION found"
+        
+        # Check if version is 3.9 or higher
+        if python3 -c 'import sys; exit(0 if sys.version_info >= (3, 9) else 1)'; then
+            print_success "Python version is compatible (3.9+)"
+        else
+            print_error "Python 3.9+ is required. Current version: $PYTHON_VERSION"
+            exit 1
+        fi
+    else
+        print_error "Python 3 is not installed. Please install Python 3.9+ first."
+        exit 1
+    fi
+}
+
+# Create virtual environment
+create_venv() {
+    print_status "Creating virtual environment..."
+    
+    if [ -d ".venv" ]; then
+        print_warning "Virtual environment already exists. Removing old one..."
+        rm -rf .venv
+    fi
+    
     python3 -m venv .venv
-fi
+    print_success "Virtual environment created"
+}
 
 # Activate virtual environment
-echo "🔧 Activating virtual environment..."
-source .venv/bin/activate
+activate_venv() {
+    print_status "Activating virtual environment..."
+    
+    if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+        source .venv/Scripts/activate
+    else
+        source .venv/bin/activate
+    fi
+    
+    print_success "Virtual environment activated"
+}
 
-# Install requirements
-echo "📥 Installing Python dependencies..."
-pip install -r requirements.txt
+# Install dependencies
+install_dependencies() {
+    print_status "Installing Python dependencies..."
+    
+    # Upgrade pip first
+    pip install --upgrade pip
+    
+    # Install requirements
+    if [ -f "requirements.txt" ]; then
+        pip install -r requirements.txt
+        print_success "Dependencies installed"
+    else
+        print_error "requirements.txt not found"
+        exit 1
+    fi
+}
 
-# Install Hyperliquid SDK
-echo "🔌 Installing Hyperliquid SDK..."
-cd src/application/hyperliquid_sdk
-pip install -e .
-cd ../../..
+# Create necessary directories
+create_directories() {
+    print_status "Creating necessary directories..."
+    
+    mkdir -p logs
+    mkdir -p src/logs
+    mkdir -p src/backtesting/data
+    mkdir -p src/config/profiles
+    
+    # Create .gitkeep files for empty directories
+    touch src/backtesting/data/.gitkeep
+    touch logs/.gitkeep
+    touch src/logs/.gitkeep
+    
+    print_success "Directories created"
+}
 
-echo "✅ Setup complete!"
-echo ""
-echo "To start using the system:"
-echo "1. Activate the virtual environment: source .venv/bin/activate"
-echo "2. Navigate to src directory: cd src"
-echo "3. Run your first backtest: python -m cli.backtest --config config/core/backtest_eth.json"
-echo ""
-echo "For more commands, see STRATEGY_COMMANDS.md"
+# Generate sample data
+generate_sample_data() {
+    print_status "Generating sample market data..."
+    
+    if [ -f "src/backtesting/data/generate_market_data.py" ]; then
+        python3 src/backtesting/data/generate_market_data.py
+        print_success "Sample data generated"
+    else
+        print_warning "Sample data generator not found, skipping..."
+    fi
+}
+
+# Run health check
+run_health_check() {
+    print_status "Running system health check..."
+    
+    if [ -f "src/utils/health_check.py" ]; then
+        python3 src/utils/health_check.py
+        print_success "Health check completed"
+    else
+        print_warning "Health check not found, skipping..."
+    fi
+}
+
+# Run tests
+run_tests() {
+    print_status "Running tests..."
+    
+    if [ -f "tests/pytest.ini" ] || [ -f "pytest.ini" ]; then
+        python3 -m pytest tests/ -v --tb=short
+        print_success "Tests completed"
+    else
+        print_warning "pytest configuration not found, skipping tests..."
+    fi
+}
+
+# Create environment file
+create_env_file() {
+    print_status "Creating environment configuration..."
+    
+    if [ ! -f ".env" ]; then
+        if [ -f "config/env.template" ]; then
+            cp config/env.template .env
+            print_success "Environment file created from template"
+        elif [ -f "config/env.example" ]; then
+            cp config/env.example .env
+            print_success "Environment file created from example"
+        else
+            # Create basic .env file
+            cat > .env << EOF
+# Hyperliquid Trading Bot - Environment Variables
+# Fill in your actual credentials below
+
+HL_API_URL=https://api.hyperliquid.xyz
+HL_PRIVATE_KEY=your_private_key_here
+HL_ADDRESS=your_wallet_address_here
+EOF
+            print_success "Basic environment file created"
+        fi
+        print_warning "Please edit .env file with your Hyperliquid credentials"
+        print_info "Required for live trading: HL_API_URL, HL_PRIVATE_KEY, HL_ADDRESS"
+        print_info "Live simulation works without credentials"
+    else
+        print_warning ".env file already exists, skipping..."
+    fi
+}
+
+# Check credentials
+check_credentials() {
+    print_status "Checking Hyperliquid credentials..."
+    
+    if [ -f "tools/check_credentials.py" ] || [ -f "check_credentials.py" ]; then
+        if [ -f "tools/check_credentials.py" ]; then
+            python3 tools/check_credentials.py
+        else
+            python3 check_credentials.py
+        fi
+        if [ $? -eq 0 ]; then
+            print_success "Credential check completed"
+        else
+            print_warning "Credential check failed - this is normal if you haven't set up credentials yet"
+            print_info "You can still use backtesting and live simulation without credentials"
+        fi
+    else
+        print_warning "Credential checker not found, skipping..."
+    fi
+}
+
+# Main setup function
+main() {
+    echo "🚀 Hyperliquid Python Trading Bot Setup"
+    echo "========================================"
+    echo ""
+    
+    check_python
+    create_venv
+    activate_venv
+    install_dependencies
+    create_directories
+    create_env_file
+    check_credentials
+    generate_sample_data
+    run_health_check
+    run_tests
+    
+    echo ""
+    echo "🎉 Setup completed successfully!"
+    echo ""
+    echo "Next steps:"
+    echo "1. Edit .env file with your configuration"
+    echo "2. Run your first backtest:"
+    echo "   python3 tools/select_strategy.py"
+    echo "3. Or run directly:"
+    echo "   python3 src/cli/backtest.py --config src/config/production/rsi_scalping/standard_5m.json"
+    echo ""
+    echo "For more information, see:"
+    echo "- README.md - Project overview"
+    echo "- QUICK_START.md - Getting started guide"
+    echo "- QUICK_COMMANDS.md - Command reference"
+    echo ""
+    echo "Happy trading! 🚀"
+}
+
+# Run main function
+main "$@"

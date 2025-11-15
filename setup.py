@@ -18,12 +18,12 @@ with open("requirements.txt") as f:
 setup(
     name="hyperliquid-trading-bot",
     version="2.0.0",
-    author="Independent Developer",
-    author_email="developer@example.com",
+    author="JDENNO91",
+    author_email="",
     description="A modular and extensible trading bot for Hyperliquid",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/hyperliquidpython",
+    url="https://github.com/JDENNO91/hyperliquidtradingbot",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     classifiers=[
@@ -54,7 +54,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "hyperliquid-bot=main:main",
+            "hyperliquid-bot=src.main:main",
         ],
     },
     include_package_data=True,

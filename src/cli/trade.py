@@ -11,8 +11,10 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent.parent))
+# Add project root to path for imports - handles both direct execution and module execution
+_project_root = Path(__file__).parent.parent.parent
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
 
 from src.config.config_manager import ConfigManager
 
@@ -311,7 +313,7 @@ Examples:
                 logger.error(f"Failed to save results to {args.output}: {e}")
         
         logger.info("Live trading started!")
-        logger.info("Note: Full live trading functionality will be implemented in the next phase")
+        logger.info("Note: Full live trading functionality is planned for a future update")
         
         # TODO: Start actual live trading loop here
         

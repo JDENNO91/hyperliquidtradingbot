@@ -1,12 +1,17 @@
-from application.hyperliquid_sdk.hyperliquid.exchange import Exchange
-from application.hyperliquid_sdk.hyperliquid.utils.signing import get_timestamp_ms
-from strategy.bbrsi_strategy import BBRSIStrategy
-from live.live_risk_manager import RiskManager
-from live.live_trade_logger import LiveTradeLogger
-from utils import setup_clients  # Ensure utils.py is in same directory
+import sys
 import logging
 import time
-import sys
+from pathlib import Path
+
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+from src.application.hyperliquid_sdk.hyperliquid.exchange import Exchange
+from src.application.hyperliquid_sdk.hyperliquid.utils.signing import get_timestamp_ms
+from src.strategies.core.bbrsi_strategy import BBRSIStrategy
+from src.live.live_risk_manager import RiskManager
+from src.live.live_trade_logger import LiveTradeLogger
+from src.live.utils import setup_clients
 
  # Reset log file at start
 open("logs/live_debug.log", "w").close()
@@ -27,11 +32,17 @@ class Live:
     Executes trades using Hyperliquid's SDK and logs all activity.
     """
     def __init__(self):
-        _, _, self.config = setup_clients()
+        # Setup clients first
+        self.address, self.info, self.exchange = setup_clients()
         self.logger = logging.getLogger()
         self.logger.info("Live initialised.")
 
         self.trade_logger = LiveTradeLogger()
+
+        # Load trading configuration from config manager
+        from src.config.config_manager import ConfigManager
+        config_manager = ConfigManager(logger=self.logger)
+        self.config = config_manager.load_config("live_eth")
 
         # Load trading configuration
         self.symbol = self.config["trading"]["market"]
@@ -40,18 +51,22 @@ class Live:
         self.leverage_mode = "isolated"
         self.position_size_pct = float(self.config["trading"]["positionSizePct"])
 
-        # Initialize trading strategy and risk manager
+        # Initialize trading strategy
         self.strategy = BBRSIStrategy(logger=self.logger, config=self.config.get("indicators", {}))
-        self.risk_manager = RiskManager(logger=self.logger, config=self.config)
 
-        # Setup exchange connection
-        self.exchange = Exchange(self.config)  # instantiate exchange client
-        self.info = self.exchange.info
-
-        account_info = self.info.user_state(self.exchange.wallet.address)
+        account_info = self.info.user_state(self.address)
         account_value = float(account_info["marginSummary"]["accountValue"])
         eth_price = float(self.info.all_mids()[self.symbol])
         self.position_size = (account_value * self.position_size_pct) / eth_price
+
+        # Initialize risk manager with correct parameters
+        self.risk_manager = RiskManager(
+            config=self.config,
+            logger=self.logger,
+            exchange=self.exchange,
+            address=self.address,
+            info=self.info
+        )
 
         self.logger.info(f"Loaded config — Symbol: {self.symbol}, Interval: {self.interval}, Leverage: {self.leverage}, Mode: {self.leverage_mode}, Position Size: {self.position_size:.4f}")
 
@@ -121,7 +136,7 @@ class Live:
 
                 # Retrieve current open position
                 try:
-                    open_positions = self.info.user_state(self.exchange.wallet.address)["assetPositions"]
+                    open_positions = self.info.user_state(self.address)["assetPositions"]
                 except Exception as e:
                     self.logger.error(f"Error fetching positions, assuming no open positions: {e}")
                     open_positions = []

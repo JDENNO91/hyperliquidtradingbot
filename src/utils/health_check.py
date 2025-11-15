@@ -26,9 +26,9 @@ def health_check():
     # Test 1: Core Imports
     print("🔍 Testing core imports...")
     try:
-        from core.base_strategy import BaseStrategy
-        from core.improved_trading_engine import ImprovedTradingEngine
-        from core.simple_risk_manager import SimpleRiskManager
+        from src.core.base_strategy import BaseStrategy
+        from src.core.improved_trading_engine import ImprovedTradingEngine
+        from src.core.simple_risk_manager import SimpleRiskManager
         print("✅ Core imports successful")
         results['core_imports'] = True
     except Exception as e:
@@ -37,10 +37,9 @@ def health_check():
     # Test 2: Strategy Imports
     print("\n🧠 Testing strategy imports...")
     try:
-        from strategies.core.rsi_scalping_strategy import RSIScalpingStrategy
-        from strategies.core.bbrsi_strategy import BBRSIStrategy
-        from strategies.core.scalping_strategy import ScalpingStrategy
-        from strategies.strategy_factory import StrategyFactory
+        from src.strategies.core.bbrsi_strategy import BBRSIStrategy
+        from src.strategies.core.scalping_strategy import ScalpingStrategy
+        from src.strategies.strategy_factory import StrategyFactory
         print("✅ Strategy imports successful")
         results['strategy_imports'] = True
     except Exception as e:
@@ -49,7 +48,7 @@ def health_check():
     # Test 3: Backtesting
     print("\n📊 Testing backtesting...")
     try:
-        from backtesting.improved_backtester import ImprovedBacktester
+        from src.backtesting.improved_backtester import ImprovedBacktester
         # Test with a simple config
         config_path = 'src/config/production/rsi_scalping/standard_5m.json'
         if Path(config_path).exists():

@@ -53,7 +53,7 @@ HL_ADDRESS=0xabcdef1234567890...
 ### **Step 3: Verify Your Setup**
 ```bash
 # Check your credential setup
-python3 check_credentials.py
+python3 tools/check_credentials.py
 ```
 
 **Expected Output:**
@@ -128,7 +128,7 @@ python3 src/utils/health_check.py
 python3 check_credentials.py
 
 # Run all tests
-python3 test_core.py
+python3 tests/test_core.py
 ```
 
 ### **Common Commands:**

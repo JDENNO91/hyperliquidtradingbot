@@ -14,8 +14,10 @@ import os
 from pathlib import Path
 from typing import Optional, Dict, Any
 
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent.parent))
+# Add project root to path for imports - handles both direct execution and module execution
+_project_root = Path(__file__).parent.parent.parent
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
 
 from src.config.config_manager import ConfigManager
 from src.application.hyperliquid_sdk.hyperliquid.info import Info

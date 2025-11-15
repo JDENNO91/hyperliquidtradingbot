@@ -29,81 +29,16 @@ ENV/
 env.bak/
 venv.bak/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Logs
-*.log
-logs/
-src/logs/
-
-# Data files (large files - generate locally)
-src/backtesting/data/*/*.json
-!src/backtesting/data/.gitkeep
-
-# Configuration files with sensitive data
-src/config/live_*.json
-src/config/*_secrets.json
-src/config/*_private.json
-*.env
-.env.*
-!.env.example
-src/application/.env
-**/.env
-**/env.local
-**/env.production
-
-# Results and outputs
-results/
-backtest_results/
-*.csv
-!requirements.txt
-
-# Temporary files
-tmp/
-temp/
-*.tmp
-temp_*.json
-test_*.sh
-
-# Jupyter Notebooks
-.ipynb_checkpoints
-*.ipynb
-
-# pytest
-.pytest_cache/
-.coverage
-htmlcov/
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Project specific
-optimization_results.json
-ma_optimization_results.json
-src/application/.env
-
 # IDE and editor files
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
+
+# OS files
 .DS_Store
 .DS_Store?
 ._*
@@ -111,37 +46,6 @@ src/application/.env
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# Python specific
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual environments
-.venv/
-venv/
-env/
-ENV/
-env.bak/
-venv.bak/
 
 # Testing
 .pytest_cache/
@@ -150,16 +54,16 @@ htmlcov/
 .tox/
 .nox/
 
-# Jupyter Notebooks
-.ipynb_checkpoints/
-*.ipynb
-
-# mypy
+# Type checking
 .mypy_cache/
 .dmypy.json
 dmypy.json
 
-# Security
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Security - Environment files and sensitive data
 *.env
 .env.*
 !.env.example
@@ -168,14 +72,19 @@ dmypy.json
 **/env.production
 src/application/.env
 
-# Data files (large files - generate locally)
-src/backtesting/data/*/*.json
-!src/backtesting/data/.gitkeep
+# Configuration files with sensitive data
+src/config/live_*.json
+src/config/*_secrets.json
+src/config/*_private.json
 
 # Logs
 *.log
 logs/
 src/logs/
+
+# Data files (large files - generate locally)
+src/backtesting/data/*/*.json
+!src/backtesting/data/.gitkeep
 
 # Results and outputs
 results/
@@ -190,7 +99,6 @@ temp/
 temp_*.json
 test_*.sh
 
-# Configuration files with sensitive data
-src/config/live_*.json
-src/config/*_secrets.json
-src/config/*_private.json
+# Project specific
+optimization_results.json
+ma_optimization_results.json

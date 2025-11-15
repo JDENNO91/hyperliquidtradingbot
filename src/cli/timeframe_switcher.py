@@ -12,10 +12,12 @@ import os
 import sys
 from pathlib import Path
 
-# Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+# Add project root to path for imports - handles both direct execution and module execution
+_project_root = Path(__file__).parent.parent.parent
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
 
-from strategies.strategy_factory import StrategyFactory
+from src.strategies.strategy_factory import StrategyFactory
 
 class TimeframeSwitcher:
     """Timeframe switcher for trading strategies."""

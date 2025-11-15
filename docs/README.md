@@ -26,7 +26,7 @@ Complete documentation for the Hyperliquid Python Trading Bot.
 - **[development/PROJECT_STATUS.md](development/PROJECT_STATUS.md)** - Current project status
 - **[development/GITHUB_PREP.md](development/GITHUB_PREP.md)** - GitHub deployment guide
 - **[development/PROJECT_SUMMARY.md](development/PROJECT_SUMMARY.md)** - Historical summary
-- **[../CONTRIBUTING.md](../CONTRIBUTING.md)** - Contributing guidelines
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contributing guidelines
 
 ---
 
@@ -36,9 +36,8 @@ Complete documentation for the Hyperliquid Python Trading Bot.
 
 ---
 
-## 📊 Results & Archives
+## 📊 Results
 
-- **[archive/](archive/)** - Archived documentation from development
 - **[results/](results/)** - Test results and optimization summaries
 
 ---
@@ -50,7 +49,7 @@ Complete documentation for the Hyperliquid Python Trading Bot.
 | Get started quickly | [../QUICK_START.md](../QUICK_START.md) |
 | See all commands | [../QUICK_COMMANDS.md](../QUICK_COMMANDS.md) |
 | Learn about strategies | [user-guides/PRODUCTION_STRATEGIES.md](user-guides/PRODUCTION_STRATEGIES.md) |
-| Contribute code | [../CONTRIBUTING.md](../CONTRIBUTING.md) |
+| Contribute code | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Deploy to production | [deployment/DEPLOYMENT_GUIDE.md](deployment/DEPLOYMENT_GUIDE.md) |
 
 ---

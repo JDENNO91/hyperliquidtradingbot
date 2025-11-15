@@ -12,6 +12,7 @@ import logging
 from typing import Tuple
 from pathlib import Path
 from dotenv import load_dotenv
+from eth_account import Account
 from src.application.hyperliquid_sdk.hyperliquid.info import Info
 from src.application.hyperliquid_sdk.hyperliquid.exchange import Exchange
 
@@ -138,9 +139,12 @@ def setup_clients() -> Tuple[str, Info, Exchange]:
         info_client = Info(base_url=config["API_URL"])
         logger.debug("Info client initialized")
         
-        # Initialize Exchange client - Hyperliquid handles the wallet internally
+        # Create wallet account from private key
+        wallet_account = Account.from_key(config["PRIVATE_KEY"])
+        
+        # Initialize Exchange client
         exchange_client = Exchange(
-            private_key=config["PRIVATE_KEY"],
+            wallet=wallet_account,
             base_url=config["API_URL"],
             account_address=config["ADDRESS"]
         )

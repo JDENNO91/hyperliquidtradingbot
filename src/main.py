@@ -13,8 +13,8 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from cli import backtest_cli, optimize_cli, simulate_cli, trade_cli
-from utils.logger import setup_logger
+from src.cli import backtest_cli, optimize_cli, simulate_cli, trade_cli
+from src.utils.logger import setup_logger
 
 def main():
     """Main CLI entry point."""
@@ -105,7 +105,7 @@ Examples:
             if not args.strategy or not args.metric:
                 logger.error("Optimize command requires --strategy and --metric arguments")
                 sys.exit(1)
-            # Note: optimize_cli() takes no parameters - uses sys.argv
+            # optimize_cli() uses sys.argv directly, so we configure it here
             sys.argv = ['optimize', '--profile', args.config or 'backtest_eth', '--metric', args.metric]
             optimize_cli()
             
@@ -113,8 +113,8 @@ Examples:
             if not args.config:
                 logger.error("Simulate command requires --config argument")
                 sys.exit(1)
-            # Import and call the new simulation CLI
-            from cli.simulate import simulate_cli
+            # Import and call the simulation CLI
+            from src.cli.simulate import simulate_cli
             # Set up sys.argv for the simulation CLI
             sys.argv = ['simulate', '--profile', args.config]
             simulate_cli()
@@ -123,7 +123,7 @@ Examples:
             if not args.config:
                 logger.error("Trade command requires --config argument")
                 sys.exit(1)
-            # Note: trade_cli() takes no parameters - uses sys.argv
+            # trade_cli() uses sys.argv directly, so we configure it here
             sys.argv = ['trade', '--profile', args.config]
             if args.dry_run:
                 sys.argv.append('--dry-run')

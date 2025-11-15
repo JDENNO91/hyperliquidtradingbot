@@ -2,13 +2,22 @@
 Configuration Validator
 
 This module provides comprehensive validation for trading system configurations.
+Supports both programmatic validation and JSON Schema validation.
 """
 
 import json
 import os
 from typing import Dict, List, Tuple, Any, Optional
 from dataclasses import dataclass
+from pathlib import Path
 import logging
+
+try:
+    import jsonschema
+    JSONSCHEMA_AVAILABLE = True
+except ImportError:
+    JSONSCHEMA_AVAILABLE = False
+    jsonschema = None
 
 logger = logging.getLogger(__name__)
 
@@ -33,10 +42,36 @@ class ConfigValidationError(Exception):
 class ConfigValidator:
     """Configuration validator for trading system."""
     
-    def __init__(self):
+    def __init__(self, use_schema: bool = True):
+        """
+        Initialize validator.
+        
+        Args:
+            use_schema: Whether to use JSON Schema validation (requires jsonschema package)
+        """
         self.errors: List[ValidationError] = []
         self.warnings: List[ValidationError] = []
         self.info: List[ValidationError] = []
+        self.use_schema = use_schema and JSONSCHEMA_AVAILABLE
+        self.schema = None
+        
+        if self.use_schema:
+            self._load_schema()
+    
+    def _load_schema(self):
+        """Load JSON schema for validation."""
+        try:
+            schema_path = Path(__file__).parent / "config_schema.json"
+            if schema_path.exists():
+                with open(schema_path, 'r') as f:
+                    self.schema = json.load(f)
+                logger.debug("JSON Schema loaded successfully")
+            else:
+                logger.warning(f"Schema file not found: {schema_path}")
+                self.use_schema = False
+        except Exception as e:
+            logger.warning(f"Failed to load JSON schema: {e}")
+            self.use_schema = False
     
     def validate(self, config: Dict[str, Any]) -> Tuple[bool, List[ValidationError]]:
         """Validate a configuration dictionary."""
@@ -44,7 +79,11 @@ class ConfigValidator:
         self.warnings.clear()
         self.info.clear()
         
-        # Basic validation
+        # JSON Schema validation (if available)
+        if self.use_schema and self.schema:
+            self._validate_with_schema(config)
+        
+        # Programmatic validation
         self._validate_required_fields(config)
         self._validate_data_types(config)
         self._validate_ranges(config)
@@ -54,6 +93,27 @@ class ConfigValidator:
         is_valid = len(self.errors) == 0
         
         return is_valid, all_issues
+    
+    def _validate_with_schema(self, config: Dict[str, Any]):
+        """Validate configuration using JSON Schema."""
+        try:
+            jsonschema.validate(instance=config, schema=self.schema)
+        except jsonschema.ValidationError as e:
+            # Extract field path from error
+            field_path = '.'.join(str(p) for p in e.absolute_path) if e.absolute_path else 'root'
+            self.errors.append(ValidationError(
+                field=field_path,
+                message=e.message,
+                severity='error',
+                suggested_value=e.validator_value if hasattr(e, 'validator_value') else None
+            ))
+        except jsonschema.SchemaError as e:
+            logger.error(f"JSON Schema error: {e}")
+            self.errors.append(ValidationError(
+                field='schema',
+                message=f"Schema validation error: {e}",
+                severity='error'
+            ))
     
     def _validate_required_fields(self, config: Dict[str, Any]):
         """Validate required fields are present."""

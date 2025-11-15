@@ -1,129 +1,42 @@
 """
-🚀 UNIVERSAL TRADING DASHBOARD - ONE DASHBOARD FOR EVERYTHING! 🚀
+Trading Dashboard
 
-This is THE dashboard that can handle ALL your trading needs in one place!
-No more switching between different tools - this dashboard does it ALL.
+A unified dashboard for monitoring and analyzing trading activity across different modes:
+- Backtesting: Analyze historical strategy performance
+- Live Simulation: Monitor paper trading in real-time
+- Live Trading: Track real trading execution and positions
 
-🎯 WHAT THIS DASHBOARD CAN DO:
-==============================
+The dashboard automatically detects which mode you're using and loads the appropriate data.
+It provides performance metrics, interactive charts, and real-time updates.
 
-🧪 BACKTESTING DASHBOARD:
-   - Analyze historical strategy performance
-   - View backtest results with full metrics
-   - Compare different strategy parameters
-   - Export performance reports
-   - Visualize equity curves and drawdowns
+Usage:
+    # Auto-detect mode
+    streamlit run src/application/dashboard.py
+    
+    # Specify mode explicitly
+    streamlit run src/application/dashboard.py -- --mode backtest
+    streamlit run src/application/dashboard.py -- --mode live_simulation
+    streamlit run src/application/dashboard.py -- --mode live
+    
+    # Custom data file
+    streamlit run src/application/dashboard.py -- --data_path path/to/trades.json
 
-📊 LIVE SIMULATION DASHBOARD (Paper Trading):
-   - Monitor paper trading in real-time
-   - Track simulated P&L and positions
-   - Analyze strategy behavior with live market data
-   - No real money risk - perfect for testing
-   - Real-time updates every 30 seconds
+Data Format:
+    JSON file with trade objects containing:
+    - timestamp: Trade timestamp
+    - market/symbol: Trading pair
+    - side: LONG or SHORT
+    - entry_price: Entry price
+    - exit_price: Exit price (null for open positions)
+    - size: Position size
+    - profit: P&L (null for open positions)
 
-💰 LIVE TRADING DASHBOARD:
-   - Monitor REAL trading execution
-   - Track live P&L and open positions
-   - Real-time risk management alerts
-   - Live market data integration
-   - Emergency stop functionality
-
-🔄 AUTO-DETECTION:
-   - Automatically detects which mode you're in
-   - Switches between backtest/simulation/live seamlessly
-   - Loads the right data source automatically
-   - No configuration needed - just works!
-
-📈 COMPREHENSIVE FEATURES:
-   - Performance metrics (win rate, Sharpe ratio, drawdown)
-   - Interactive charts (P&L over time, trade distribution)
-   - Advanced filtering and search
-   - Real-time data updates
-   - Export capabilities
-   - Mobile-responsive design
-
-How to Use:
------------
-1. Basic Usage (Auto-detect mode):
-   streamlit run src/application/dashboard.py
-
-2. Specific Trading Mode:
-   streamlit run src/application/dashboard.py -- --mode backtest
-   streamlit run src/application/dashboard.py -- --mode live_simulation
-   streamlit run src/application/dashboard.py -- --mode live
-
-3. Custom Data File:
-   streamlit run src/application/dashboard.py -- --data_path path/to/your/trades.json
-
-4. Command Line Options:
-   --server.headless true    # Run without browser
-   --server.port 8501       # Custom port
-   --server.address 0.0.0.0 # External access
-
-5. Workflow Examples:
-   
-   BACKTEST MODE:
-   # Option 1: Simple (uses smart defaults)
-   PYTHONPATH=src python3 src/backtesting/unified_backtester.py
-   
-   # Option 2: Custom (specify everything)
-   PYTHONPATH=src python3 src/backtesting/unified_backtester.py \
-     --config src/config/backtest_eth.json \
-     --data src/backtesting/data/ETH-PERP/ETH-PERP-1m.json \
-     --output src/backtesting/unified_backtest_results.json
-   
-   # Step 2: Launch dashboard
-   streamlit run src/application/dashboard.py -- --mode backtest
-   
-   💡 WHY TWO OPTIONS?
-   - Option 1 (Simple): Uses smart defaults - just works!
-   - Option 2 (Custom): Full control over config, data, and output
-   - Both create the same dashboard-compatible results
-   
-   🧹 CLEAN PROJECT: We've removed ALL redundant backtesting systems!
-   - Only ONE unified backtesting system remains
-   - No more confusion about which tool to use
-   - Clean, maintainable codebase
-   
-   LIVE SIMULATION MODE:
-   # Step 1: Run live simulation
-   PYTHONPATH=src python3 src/live_simulation/simulation_runner.py
-   
-   # Step 2: Launch dashboard
-   streamlit run src/application/dashboard.py -- --mode live_simulation
-
-6. Data Format Requirements:
-   JSON file with trade objects containing:
-   - timestamp: Trade timestamp
-   - market/symbol: Trading pair
-   - side: LONG/SHORT
-   - entry_price: Entry price
-   - exit_price: Exit price (null for open positions)
-   - size: Position size
-   - profit: P&L (null for open positions)
-
-7. Dashboard Features:
-   - Performance Metrics: Win rate, P&L, drawdown
-   - Trade Table: Filterable trade history
-   - Charts: P&L over time, trade distribution
-   - Real-time Updates: Auto-refresh for live modes
-   - Mode Detection: Automatic mode switching
-
-8. Troubleshooting:
-   - Ensure trade data file exists and is valid JSON
-   - Check file permissions and path
-   - Verify data format matches requirements
-   - Use browser console for JavaScript errors
-
-🎉 BOTTOM LINE: This dashboard replaces ALL other trading monitoring tools!
-   - ✅ Backtesting analysis tools
-   - ✅ Paper trading monitors
-   - ✅ Live trading dashboards
-   - ✅ Performance reporting tools
-   - ✅ Trade analysis software
-
-Author: Hyperliquid Trading Bot Team
-Date: 2024
+Features:
+    - Performance metrics (win rate, Sharpe ratio, drawdown, P&L)
+    - Interactive charts (P&L over time, trade distribution)
+    - Filterable trade history table
+    - Real-time updates for live modes
+    - Export capabilities
 """
 
 import streamlit as st
@@ -148,39 +61,23 @@ logger = logging.getLogger(__name__)
 
 class TradingDashboard:
     """
-    🚀 THE ONE AND ONLY DASHBOARD YOU'LL EVER NEED! 🚀
+    Unified trading dashboard for monitoring and analyzing trading activity.
     
-    This is a UNIVERSAL trading dashboard that handles EVERYTHING:
-    - 🧪 Backtesting analysis and results
-    - 📊 Live simulation (paper trading) monitoring  
-    - 💰 Live trading execution and risk management
-    - 🔄 Automatic mode detection and switching
-    - 📈 Comprehensive performance analytics
-    - 🎯 Real-time updates and alerts
+    Supports three modes:
+    - Backtesting: Analyze historical strategy performance
+    - Live Simulation: Monitor paper trading in real-time
+    - Live Trading: Track real trading execution and risk management
     
-    NO MORE SWITCHING BETWEEN TOOLS - THIS DASHBOARD DOES IT ALL!
+    The dashboard automatically detects the active mode and loads the appropriate data.
+    It provides performance metrics, interactive charts, and real-time updates.
     
-    Quick Start Example:
-    -------------------
-    ```python
-    # Create and run dashboard for specific mode
-    dashboard = TradingDashboard(mode="live_simulation")
-    dashboard.run()
-    
-    # Or run directly from command line:
-    # streamlit run src/application/dashboard.py -- --mode live_simulation
-    ```
-    
-    The dashboard will automatically:
-    - 🎯 Detect and load data from the appropriate source for each mode
-    - 📊 Calculate comprehensive performance metrics (win rate, P&L, drawdown, Sharpe ratio)
-    - 📈 Display interactive charts and tables (P&L over time, trade distribution)
-    - 🔍 Provide advanced filtering and search capabilities
-    - ⚡ Update in real-time for live modes with auto-refresh
-    - 🚨 Show risk alerts and position monitoring
-    - 📱 Provide mobile-responsive interface
-    
-    🎉 This dashboard replaces ALL other trading tools combined!
+    Example:
+        # Create and run dashboard
+        dashboard = TradingDashboard(mode="live_simulation")
+        dashboard.run()
+        
+        # Or run from command line:
+        # streamlit run src/application/dashboard.py -- --mode live_simulation
     """
     
     def __init__(self, mode: str = "auto", data_path: str = None):
@@ -255,7 +152,7 @@ class TradingDashboard:
         """Configure Streamlit page settings for optimal display."""
         st.set_page_config(
             page_title="Hyperliquid Trading Dashboard",
-            page_icon="📊",
+            page_icon=None,
             layout="wide",
             initial_sidebar_state="expanded"
         )
@@ -273,34 +170,34 @@ class TradingDashboard:
             
             # Check if file exists
             if not os.path.exists(data_path):
-                st.error(f"❌ Data file not found: {data_path}")
-                st.info(f"💡 Make sure you have run some {self.mode} trades first!")
-                st.info(f"📁 Expected file: {data_path}")
+                st.error(f"Data file not found: {data_path}")
+                st.info(f"Make sure you have run some {self.mode} trades first.")
+                st.info(f"Expected file: {data_path}")
                 return False
                 
             # Load and parse JSON data
             with open(data_path, "r") as f:
                 trades_data = json.load(f)
 
-# Convert to DataFrame
+            # Convert to DataFrame
             self.trades_df = pd.DataFrame(trades_data)
             
             # Validate data structure
             if self.trades_df.empty:
-                st.warning("⚠️ No trading data available yet.")
+                st.warning("No trading data available yet.")
                 return False
                 
             # Process and clean data
             self._process_trade_data()
             
-            st.success(f"✅ Loaded {len(self.trades_df)} {self.mode} trades successfully!")
+            st.success(f"Loaded {len(self.trades_df)} {self.mode} trades successfully")
             return True
             
         except json.JSONDecodeError as e:
-            st.error(f"❌ Invalid JSON format: {e}")
+            st.error(f"Invalid JSON format: {e}")
             return False
         except Exception as e:
-            st.error(f"❌ Error loading data: {e}")
+            st.error(f"Error loading data: {e}")
             logger.error(f"Dashboard data loading error: {e}")
             return False
     
@@ -494,7 +391,7 @@ class TradingDashboard:
     
     def display_header(self):
         """Display the main dashboard header with title and basic info."""
-        st.title("🚀 Hyperliquid Trading Dashboard")
+        st.title("Hyperliquid Trading Dashboard")
         st.markdown("---")
         
         # Display basic stats
@@ -521,7 +418,7 @@ class TradingDashboard:
         if not self.performance_metrics:
             return
             
-        st.subheader("📊 Performance Metrics")
+        st.subheader("Performance Metrics")
         
         # Create columns for metrics display
         col1, col2 = st.columns(2)
@@ -608,21 +505,27 @@ class TradingDashboard:
         )
         
         # Show filter summary
-        st.info(f"📊 Showing {len(filtered_df)} of {len(self.trades_df)} trades")
+        st.info(f"Showing {len(filtered_df)} of {len(self.trades_df)} trades")
     
     def display_charts(self):
         """Display performance charts and visualizations."""
         if self.trades_df is None or self.trades_df.empty:
             return
             
-        st.subheader("📈 Performance Charts")
+        st.subheader("Performance Charts")
         
         # Create tabs for different chart types
         tab1, tab2, tab3 = st.tabs(["P&L Over Time", "Trade Distribution", "Performance Analysis"])
         
         with tab1:
             # Cumulative P&L chart
-            if 'cumulative_profit' in self.trades_df.columns and 'entry_time' in self.trades_df.columns:
+            has_pnl_data = (
+                'cumulative_profit' in self.trades_df.columns
+                and 'entry_time' in self.trades_df.columns
+            )
+            if not has_pnl_data:
+                st.warning("Insufficient data for P&L chart")
+            else:
                 fig = px.line(
                     self.trades_df,
                     x='entry_time',
@@ -631,8 +534,6 @@ class TradingDashboard:
                     labels={'entry_time': 'Time', 'cumulative_profit': 'Cumulative P&L ($)'}
                 )
                 st.plotly_chart(fig, use_container_width=True)
-    else:
-                st.warning("⚠️ Insufficient data for P&L chart")
         
         with tab2:
             # Trade distribution charts
@@ -697,7 +598,7 @@ class TradingDashboard:
             self._display_refresh_controls()
                 
         except Exception as e:
-            st.error(f"❌ Dashboard error: {e}")
+            st.error(f"Dashboard error: {e}")
             logger.error(f"Dashboard runtime error: {e}")
     
     def _display_refresh_controls(self):
@@ -707,38 +608,30 @@ class TradingDashboard:
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            if st.button("🔄 Manual Refresh"):
+            if st.button("Manual Refresh"):
                 st.rerun()
         
         with col2:
             # Auto-refresh toggle for live modes
             if self.mode in ["live", "live_simulation"]:
-                auto_refresh = st.checkbox("🔄 Auto-refresh (30s)", value=False)
+                auto_refresh = st.checkbox("Auto-refresh (30s)", value=False)
                 if auto_refresh:
                     st.info("Auto-refresh enabled - data will update every 30 seconds")
         
         with col3:
             # Show current mode and data source
             data_path = self._get_data_path()
-            st.info(f"📊 Mode: {self.mode.replace('_', ' ').title()}")
-            st.info(f"📁 Source: {os.path.basename(data_path)}")
+            st.info(f"Mode: {self.mode.replace('_', ' ').title()}")
+            st.info(f"Source: {os.path.basename(data_path)}")
 
 
 def main():
     """
-    🚀 MAIN ENTRY POINT - LAUNCHES THE UNIVERSAL TRADING DASHBOARD! 🚀
+    Main entry point for the trading dashboard.
     
-    This function creates and runs the TradingDashboard instance,
-    providing a simple entry point for the application.
-    
-    🎯 WHAT HAPPENS WHEN YOU RUN THIS:
-    - Dashboard automatically detects your trading mode
-    - Loads the appropriate data source
-    - Displays comprehensive analytics
-    - Provides real-time monitoring
-    - Handles ALL trading scenarios in one place!
-    
-    🚀 NO MORE MULTIPLE TOOLS - THIS IS YOUR ONE-STOP SOLUTION!
+    Creates and runs the TradingDashboard instance. The dashboard automatically
+    detects the trading mode, loads the appropriate data source, and displays
+    analytics and real-time monitoring.
     """
     import argparse
     
@@ -762,7 +655,7 @@ def main():
         dashboard.run()
         
     except Exception as e:
-        st.error(f"❌ Failed to start dashboard: {e}")
+        st.error(f"Failed to start dashboard: {e}")
         logger.error(f"Dashboard startup error: {e}")
 
 

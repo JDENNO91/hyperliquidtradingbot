@@ -15,11 +15,12 @@ import sys
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from core.improved_trading_engine import ImprovedTradingEngine
-from core.base_strategy import BaseStrategy
-from strategies import StrategyFactory
-from config import ConfigManager
-from utils import setup_logger, load_market_data, calculate_metrics, generate_performance_report
+from src.core.improved_trading_engine import ImprovedTradingEngine
+from src.core.base_strategy import BaseStrategy
+from src.strategies.strategy_factory import StrategyFactory
+from src.config.config_manager import ConfigManager
+from src.utils.logger import setup_logger
+from src.utils.data_loader import load_market_data
 
 logger = logging.getLogger(__name__)
 

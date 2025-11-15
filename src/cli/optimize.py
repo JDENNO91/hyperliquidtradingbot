@@ -11,8 +11,10 @@ import logging
 from pathlib import Path
 from typing import Optional, List
 
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent.parent))
+# Add project root to path for imports - handles both direct execution and module execution
+_project_root = Path(__file__).parent.parent.parent
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
 
 from src.config.config_manager import ConfigManager
 
@@ -275,7 +277,7 @@ Examples:
             logger.error(f"Failed to save detailed results: {e}")
         
         logger.info("Optimization process completed!")
-        logger.info("Note: Full optimization functionality will be implemented in the next phase")
+        logger.info("Note: Full optimization functionality is planned for a future update")
         
     except KeyboardInterrupt:
         logger.info("Optimization interrupted by user")

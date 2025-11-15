@@ -10,10 +10,12 @@ import json
 import sys
 from pathlib import Path
 
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add project root to path for imports - handles both direct execution and module execution
+_project_root = Path(__file__).parent.parent.parent
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
 
-from config.strategy_switcher import StrategySwitcher
+from src.config.strategy_switcher import StrategySwitcher
 
 
 def list_strategies():

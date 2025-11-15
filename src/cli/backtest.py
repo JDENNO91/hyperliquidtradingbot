@@ -10,11 +10,13 @@ import logging
 import sys
 from pathlib import Path
 
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add project root to path for imports - handles both direct execution and module execution
+_project_root = Path(__file__).parent.parent.parent
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
 
-from backtesting.improved_backtester import ImprovedBacktester
-from utils.logger import setup_logger
+from src.backtesting.improved_backtester import ImprovedBacktester
+from src.utils.logger import setup_logger
 
 def setup_logging(log_level: str = "INFO", log_file: str = None):
     """Setup logging configuration."""
@@ -115,26 +117,26 @@ def _infer_data_path_from_config(config_path: str) -> str:
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
-        description="🚀 Unified Backtesting CLI - Run backtests with smart defaults",
+        description="Unified Backtesting CLI - Run backtests with smart defaults",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-🎯 **Examples:**
+Examples:
 
   # Run backtest with config and data files
-  python -m cli.backtest --config config/backtest_eth.json --data data/ETH-PERP-1m.json
+  python -m src.cli.backtest --config src/config/backtest_eth.json --data src/backtesting/data/ETH-PERP/ETH-PERP-1m.json
   
   # Run backtest with auto-detected data path (recommended)
-  python -m cli.backtest --config config/backtest_eth.json
+  python -m src.cli.backtest --config src/config/backtest_eth.json
   
   # Save results to file
-  python -m cli.backtest --config config/backtest_eth.json --output results.json
+  python -m src.cli.backtest --config src/config/backtest_eth.json --output results.json
   
   # Verbose logging for debugging
-  python -m cli.backtest --config config/backtest_eth.json --log-level DEBUG
+  python -m src.cli.backtest --config src/config/backtest_eth.json --log-level DEBUG
 
-📁 **Smart Data Detection:**
+Smart Data Detection:
   The CLI automatically detects market data files based on your config.
-  Just specify the config file and let it find the right data!
+  Just specify the config file and it will find the appropriate data file.
         """
     )
     

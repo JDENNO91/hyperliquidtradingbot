@@ -11,13 +11,13 @@ git clone https://github.com/JDENNO91/hyperliquidtradingbot.git
 cd hyperliquidtradingbot
 
 # Run the automated setup
-./setup.sh
+./docs/setup-scripts/setup.sh
 ```
 
 ### First Backtest
 ```bash
 # Run a quick backtest
-python test_core.py
+python tests/test_core.py
 ```
 
 ## 📊 Project Structure
@@ -125,12 +125,12 @@ Required variables:
 
 ### Verify Credentials
 ```bash
-python check_credentials.py
+python tools/check_credentials.py
 ```
 
 ## 📚 Documentation
 
-- [Credential Setup Guide](CREDENTIAL_SETUP.md)
+- [Credential Setup Guide](docs/CREDENTIAL_SETUP.md)
 - [Trading Strategies Guide](docs/guides/TRADING_STRATEGIES_GUIDE.md)
 - [Strategy Switching Guide](docs/guides/STRATEGY_SWITCHING_GUIDE.md)
 - [Trading Commands](docs/guides/TRADING_COMMANDS.md)
@@ -145,12 +145,12 @@ python -c "from src.utils.health_check import health_check; print('✅ System he
 
 ### Core Test Suite
 ```bash
-python test_core.py
+python tests/test_core.py
 ```
 
 ### Comprehensive Test Suite
 ```bash
-python test_project.py
+python tests/test_project.py
 ```
 
 ### Individual Test Categories
@@ -180,7 +180,7 @@ python -m pytest tests/test_strategies.py -v
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Run tests: `python test_project.py`
+4. Run tests: `python tests/test_project.py`
 5. Submit a pull request
 
 ## ⚠️ Risk Warning
@@ -198,7 +198,7 @@ python -m pytest tests/test_strategies.py -v
 
 - [Hyperliquid DEX](https://hyperliquid.xyz)
 - [Hyperliquid SDK](src/application/hyperliquid_sdk/)
-- [Full Credential Guide](CREDENTIAL_SETUP.md)
+- [Full Credential Guide](docs/CREDENTIAL_SETUP.md)
 
 ---
 

@@ -1,0 +1,254 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Hyperliquid Trading Bot Configuration Schema",
+  "type": "object",
+  "required": ["trading", "indicators", "risk_management"],
+  "properties": {
+    "trading": {
+      "type": "object",
+      "required": ["market", "timeframe", "leverage", "positionSize"],
+      "properties": {
+        "market": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]+-PERP$|^[A-Z0-9]+$",
+          "description": "Trading pair symbol (e.g., ETH-PERP, BTC-PERP)"
+        },
+        "timeframe": {
+          "type": "string",
+          "enum": ["1m", "5m", "15m", "1h", "4h", "1d"],
+          "description": "Trading timeframe"
+        },
+        "leverage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "description": "Leverage multiplier (1-50)"
+        },
+        "positionSize": {
+          "type": "number",
+          "minimum": 0.001,
+          "maximum": 1.0,
+          "description": "Position size as fraction of capital (0.001-1.0)"
+        },
+        "positionSizePct": {
+          "type": "number",
+          "minimum": 0.001,
+          "maximum": 1.0,
+          "description": "Position size as percentage (0.001-1.0)"
+        },
+        "initial_capital": {
+          "type": "number",
+          "minimum": 100,
+          "description": "Initial capital for backtesting"
+        }
+      }
+    },
+    "indicators": {
+      "type": "object",
+      "properties": {
+        "rsi_period": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 100,
+          "default": 14,
+          "description": "RSI calculation period"
+        },
+        "rsi_overbought": {
+          "type": "number",
+          "minimum": 50,
+          "maximum": 100,
+          "default": 70,
+          "description": "RSI overbought threshold"
+        },
+        "rsi_oversold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 50,
+          "default": 30,
+          "description": "RSI oversold threshold"
+        },
+        "bb_period": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 200,
+          "default": 20,
+          "description": "Bollinger Bands period"
+        },
+        "bb_stddev": {
+          "type": "number",
+          "minimum": 0.5,
+          "maximum": 5.0,
+          "default": 2.0,
+          "description": "Bollinger Bands standard deviation multiplier"
+        },
+        "adx_period": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 100,
+          "default": 14,
+          "description": "ADX calculation period"
+        },
+        "ma_period": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 200,
+          "default": 20,
+          "description": "Moving average period"
+        },
+        "ma_type": {
+          "type": "string",
+          "enum": ["SMA", "EMA"],
+          "default": "SMA",
+          "description": "Moving average type"
+        }
+      }
+    },
+    "risk_management": {
+      "type": "object",
+      "required": ["max_risk_per_trade", "max_drawdown"],
+      "properties": {
+        "max_risk_per_trade": {
+          "type": "number",
+          "minimum": 0.001,
+          "maximum": 0.1,
+          "default": 0.02,
+          "description": "Maximum risk per trade as fraction of capital"
+        },
+        "max_drawdown": {
+          "type": "number",
+          "minimum": 0.01,
+          "maximum": 0.5,
+          "default": 0.15,
+          "description": "Maximum allowed drawdown as fraction"
+        },
+        "stop_loss_pct": {
+          "type": "number",
+          "minimum": 0.001,
+          "maximum": 0.1,
+          "default": 0.015,
+          "description": "Stop loss percentage"
+        },
+        "take_profit_pct": {
+          "type": "number",
+          "minimum": 0.001,
+          "maximum": 0.5,
+          "default": 0.03,
+          "description": "Take profit percentage"
+        },
+        "trailing_stop_pct": {
+          "type": "number",
+          "minimum": 0.001,
+          "maximum": 0.1,
+          "default": 0.01,
+          "description": "Trailing stop percentage"
+        },
+        "max_concurrent_positions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 1,
+          "description": "Maximum concurrent positions"
+        },
+        "max_daily_loss": {
+          "type": "number",
+          "minimum": 0.01,
+          "maximum": 0.5,
+          "default": 0.1,
+          "description": "Maximum daily loss limit"
+        },
+        "var_confidence": {
+          "type": "number",
+          "minimum": 0.90,
+          "maximum": 0.99,
+          "default": 0.95,
+          "description": "Value at Risk confidence level"
+        }
+      }
+    },
+    "strategy": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Strategy name"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["bbrsi", "scalping", "super_optimized"],
+          "description": "Strategy type"
+        }
+      }
+    },
+    "backtesting": {
+      "type": "object",
+      "properties": {
+        "slippage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.01,
+          "default": 0.001,
+          "description": "Slippage as fraction (0.1% default)"
+        },
+        "fee_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.01,
+          "default": 0.0005,
+          "description": "Trading fee rate (0.05% default)"
+        },
+        "execution_latency_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "default": 100,
+          "description": "Order execution latency in milliseconds"
+        },
+        "partial_fills": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable partial fill simulation"
+        },
+        "liquidity_constraint": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1.0,
+          "default": 1.0,
+          "description": "Liquidity constraint factor (1.0 = no constraint)"
+        }
+      }
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path to market data file"
+        }
+      }
+    },
+    "logging": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+          "default": "INFO"
+        },
+        "file": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "level": {
+              "type": "string",
+              "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
