@@ -22,7 +22,7 @@ python3 -m src.cli.backtest --config src/config/production/rsi_scalping/backtest
 python3 -m src.cli.simulate --profile live_eth
 
 # Check system health
-python3 src/utils/health_check.py
+python3 -c "from src.utils.health_check import health_check; health_check()"
 ```
 
 ## 🔧 **Setting Up Credentials (For Live Trading)**
@@ -122,10 +122,10 @@ nano .env
 ### **Check System Status:**
 ```bash
 # Full system health check
-python3 src/utils/health_check.py
+python3 -c "from src.utils.health_check import health_check; health_check()"
 
 # Credential-specific check
-python3 check_credentials.py
+python3 tools/check_credentials.py
 
 # Run all tests
 python3 tests/test_core.py

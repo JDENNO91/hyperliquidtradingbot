@@ -7,8 +7,8 @@ Complete documentation for the Hyperliquid Python Trading Bot.
 ## 🚀 Getting Started
 
 **New users start here:**
-- **[../QUICK_START.md](../QUICK_START.md)** - Setup and first backtest
-- **[../QUICK_COMMANDS.md](../QUICK_COMMANDS.md)** - Quick command reference
+- **[../README.md](../README.md)** - Main README with setup and quick start
+- **[guides/TRADING_COMMANDS.md](guides/TRADING_COMMANDS.md)** - Trading commands reference
 
 ---
 
@@ -23,10 +23,9 @@ Complete documentation for the Hyperliquid Python Trading Bot.
 
 ## 🔧 Development
 
-- **[development/PROJECT_STATUS.md](development/PROJECT_STATUS.md)** - Current project status
-- **[development/GITHUB_PREP.md](development/GITHUB_PREP.md)** - GitHub deployment guide
-- **[development/PROJECT_SUMMARY.md](development/PROJECT_SUMMARY.md)** - Historical summary
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contributing guidelines
+- **[architecture/ARCHITECTURE.md](architecture/ARCHITECTURE.md)** - System architecture
+- **[guides/STRATEGY_DEVELOPMENT_GUIDE.md](guides/STRATEGY_DEVELOPMENT_GUIDE.md)** - How to create custom strategies
 
 ---
 
@@ -46,12 +45,13 @@ Complete documentation for the Hyperliquid Python Trading Bot.
 
 | I want to... | Go to... |
 |--------------|----------|
-| Get started quickly | [../QUICK_START.md](../QUICK_START.md) |
-| See all commands | [../QUICK_COMMANDS.md](../QUICK_COMMANDS.md) |
+| Get started quickly | [../README.md](../README.md) |
+| See all commands | [guides/TRADING_COMMANDS.md](guides/TRADING_COMMANDS.md) |
 | Learn about strategies | [user-guides/PRODUCTION_STRATEGIES.md](user-guides/PRODUCTION_STRATEGIES.md) |
+| Switch strategies | [guides/STRATEGY_SWITCHING_GUIDE.md](guides/STRATEGY_SWITCHING_GUIDE.md) |
 | Contribute code | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Deploy to production | [deployment/DEPLOYMENT_GUIDE.md](deployment/DEPLOYMENT_GUIDE.md) |
 
 ---
 
-**Start here:** [../QUICK_START.md](../QUICK_START.md)
+**Start here:** [../README.md](../README.md)

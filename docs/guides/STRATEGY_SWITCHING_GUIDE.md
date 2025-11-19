@@ -1,20 +1,6 @@
 # Strategy Switching Guide
 
-This guide shows how to easily switch between the two improved trading strategies using the new strategy switching system.
-
-## Available Strategies
-
-### 1. BBRSI Strategy
-- **Type**: Mean reversion with trend confirmation
-- **Risk Level**: Medium
-- **Best For**: Trending and ranging markets
-- **Characteristics**: Balanced risk/reward, medium hold times
-
-### 2. Scalping Strategy  
-- **Type**: High-frequency price action
-- **Risk Level**: High
-- **Best For**: Volatile markets
-- **Characteristics**: Tight risk/reward, short hold times
+This guide shows how to switch between trading strategies. For detailed strategy information, see [TRADING_STRATEGIES_GUIDE.md](TRADING_STRATEGIES_GUIDE.md) or [../user-guides/PRODUCTION_STRATEGIES.md](../user-guides/PRODUCTION_STRATEGIES.md).
 
 ## Quick Strategy Switching
 
@@ -22,19 +8,19 @@ This guide shows how to easily switch between the two improved trading strategie
 
 ```bash
 # List all available strategies
-python src/cli/strategy_switcher.py list
+python -m src.cli.strategy_switcher list
 
 # Compare strategies
-python src/cli/strategy_switcher.py compare
+python -m src.cli.strategy_switcher compare
 
 # Get strategy recommendation
-python src/cli/strategy_switcher.py recommend volatile high
+python -m src.cli.strategy_switcher recommend volatile high
 
 # Generate configuration for a strategy
-python src/cli/strategy_switcher.py config bbrsi --mode backtest --output my_config.json
+python -m src.cli.strategy_switcher config bbrsi --mode backtest --output my_config.json
 
 # Run backtest with specific strategy
-python src/cli/strategy_switcher.py backtest scalping --capital 5000 --risk 0.01
+python -m src.cli.strategy_switcher backtest scalping --capital 5000 --risk 0.01
 ```
 
 ### Method 2: Using Python Code
@@ -64,25 +50,15 @@ config = switcher.create_backtest_config('bbrsi',
 
 ```bash
 # Use BBRSI strategy
-python src/cli/backtest.py --config src/config/backtest_eth.json
+python -m src.cli.backtest --config src/config/backtest_eth.json
 
 # Use Scalping strategy  
-python src/cli/backtest.py --config src/config/backtest_scalping_eth.json
+python -m src.cli.backtest --config src/config/backtest_scalping_eth.json
 ```
 
-## Strategy Selection Guide
+## Strategy Selection
 
-### Choose BBRSI Strategy When:
-- Market is trending or ranging
-- You prefer medium risk/reward
-- You want balanced entry frequency
-- You're comfortable with medium hold times
-
-### Choose Scalping Strategy When:
-- Market is highly volatile
-- You prefer high-frequency trading
-- You want tight risk management
-- You're comfortable with short hold times
+See [TRADING_STRATEGIES_GUIDE.md](TRADING_STRATEGIES_GUIDE.md) for detailed strategy selection guidance.
 
 ## Configuration Customization
 
@@ -111,28 +87,23 @@ scalping_config = switch_to_strategy('scalping',
 )
 ```
 
-## Performance Comparison
-
-| Strategy | Risk Level | Entry Frequency | Hold Time | Best Market Conditions |
-|----------|------------|-----------------|-----------|----------------------|
-| BBRSI    | Medium     | Medium          | Medium    | Trending/Ranging     |
-| Scalping | High       | High            | Short     | Volatile             |
+For performance comparisons, see [../user-guides/PRODUCTION_STRATEGIES.md](../user-guides/PRODUCTION_STRATEGIES.md).
 
 ## Quick Start Examples
 
 ### Example 1: Conservative Trading
 ```bash
-python src/cli/strategy_switcher.py backtest bbrsi --capital 10000 --risk 0.01
+python -m src.cli.strategy_switcher backtest bbrsi --capital 10000 --risk 0.01
 ```
 
 ### Example 2: Aggressive Trading
 ```bash
-python src/cli/strategy_switcher.py backtest scalping --capital 5000 --risk 0.02
+python -m src.cli.strategy_switcher backtest scalping --capital 5000 --risk 0.02
 ```
 
 ### Example 3: Get Recommendation
 ```bash
-python src/cli/strategy_switcher.py recommend trending medium
+python -m src.cli.strategy_switcher recommend trending medium
 ```
 
 ## Advanced Features
@@ -173,8 +144,8 @@ is_valid, errors = switcher.validate_strategy_config('bbrsi', config)
 
 ### Getting Help:
 ```bash
-python src/cli/strategy_switcher.py --help
-python src/cli/strategy_switcher.py config --help
+python -m src.cli.strategy_switcher --help
+python -m src.cli.strategy_switcher config --help
 ```
 
-This system makes it incredibly easy to switch between strategies and experiment with different approaches to find what works best for your trading style and market conditions.
+For more information on strategies, see [TRADING_STRATEGIES_GUIDE.md](TRADING_STRATEGIES_GUIDE.md) or [../user-guides/PRODUCTION_STRATEGIES.md](../user-guides/PRODUCTION_STRATEGIES.md).

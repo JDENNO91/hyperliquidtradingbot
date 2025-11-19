@@ -24,7 +24,7 @@ python3 src/cli/backtest.py --config src/config/production/rsi_scalping/ultra_1m
 
 **Or use the interactive selector:**
 ```bash
-python3 select_strategy.py
+python3 tools/select_strategy.py
 ```
 
 ---
@@ -300,11 +300,10 @@ Before going live with any strategy:
 
 ## 📞 Support Files
 
-- **Strategy Selector:** `select_strategy.py` (interactive)
-- **Quick Commands:** `QUICK_COMMANDS.md`
-- **This Guide:** `PRODUCTION_STRATEGIES.md`
+- **Strategy Selector:** `tools/select_strategy.py` (interactive)
+- **Trading Commands:** [../guides/TRADING_COMMANDS.md](../guides/TRADING_COMMANDS.md)
+- **Strategy Guide:** [../guides/TRADING_STRATEGIES_GUIDE.md](../guides/TRADING_STRATEGIES_GUIDE.md)
 - **Config Location:** `src/config/production/`
-- **Strategy Files:** `src/strategies/core/`
 
 ---
 

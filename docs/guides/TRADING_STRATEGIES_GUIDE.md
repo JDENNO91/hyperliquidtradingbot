@@ -67,19 +67,19 @@ This comprehensive guide explains the two main trading strategies, their functio
 
 ```bash
 # Test BBRSI Strategy
-python -m cli.backtest --config src/config/backtest_eth.json
+python -m src.cli.backtest --config src/config/backtest_eth.json
 
 # Test Scalping Strategy  
-python -m cli.backtest --config src/config/backtest_scalping_eth.json
+python -m src.cli.backtest --config src/config/backtest_scalping_eth.json
 
-# Use improved backtester (recommended)
-PYTHONPATH=src python3 src/cli/improved_backtest.py --config src/config/backtest_eth.json
+# Run backtest with auto-detected data (recommended)
+python -m src.cli.backtest --config src/config/backtest_eth.json
 
 # Save results to file
-PYTHONPATH=src python3 src/cli/improved_backtest.py --config src/config/backtest_eth.json --output results.json
+python -m src.cli.backtest --config src/config/backtest_eth.json --output results.json
 
 # Debug mode with detailed logging
-PYTHONPATH=src python3 src/cli/improved_backtest.py --config src/config/backtest_eth.json --log-level DEBUG
+python -m src.cli.backtest --config src/config/backtest_eth.json --log-level DEBUG
 ```
 
 #### **Configuration Files:**
@@ -98,11 +98,11 @@ PYTHONPATH=src python3 src/cli/improved_backtest.py --config src/config/backtest
 #### **Commands:**
 
 ```bash
-# Run BBRSI live simulation
-PYTHONPATH=src python3 src/live_simulation/run_live_simulation.py --config src/config/live_eth.json --strategy bbrsi
+# Run live simulation with BBRSI strategy
+python -m src.cli.simulate --config src/config/live_eth.json
 
-# Run Scalping live simulation
-PYTHONPATH=src python3 src/live_simulation/run_live_simulation.py --config src/config/live_eth.json --strategy scalping
+# Run live simulation with Scalping strategy
+python -m src.cli.simulate --config src/config/backtest_scalping_eth.json
 
 # Monitor performance
 PYTHONPATH=src python3 src/live_simulation/monitor_performance.py
@@ -125,10 +125,7 @@ PYTHONPATH=src python3 src/live_simulation/monitor_performance.py
 
 ```bash
 # Run live trading (REAL MONEY - USE WITH CAUTION)
-PYTHONPATH=src python3 src/live/run_live.py --config src/config/live_eth.json --strategy bbrsi
-
-# Run with specific risk settings
-PYTHONPATH=src python3 src/live/run_live.py --config src/config/live_eth.json --strategy scalping --max-position-size 0.02
+python -m src.cli.trade --config src/config/live_eth.json --dry-run
 
 # Monitor live performance
 PYTHONPATH=src python3 src/live/monitor_performance.py
@@ -283,7 +280,7 @@ tail -f src/logs/live_trades.json
 --log-level DEBUG
 
 # Check system health
-PYTHONPATH=src python3 src/quick_health_check.py
+python -c "from src.utils.health_check import health_check; health_check()"
 
 # Test connections
 PYTHONPATH=src python3 src/test_connections.py
